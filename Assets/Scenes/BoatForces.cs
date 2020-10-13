@@ -12,6 +12,7 @@ public class BoatForces : MonoBehaviour
     private Mesh underWaterMesh;
     public float underwaterSurface = 18.0f;
     public float underwaterVolume = 8.0f; 
+    public float shipLenght = 8.0f; 
     
     void Start()
     {
@@ -50,15 +51,27 @@ public class BoatForces : MonoBehaviour
     {        
         //rigidbody.AddForce(transform.forward * thrust);
 
-        //float resistiveForce = 0.5f * 1000 * rigidbody.velocity.magnitude * rigidbody.velocity.magnitude
+        
 
-        float surface = 2.6f *  Mathf.Sqrt(underwaterVolume * 8.0f);
-        float frictionalForce = 0.5f * 1000 * rigidbody.velocity.magnitude * rigidbody.velocity.magnitude * surface * 0.004f;
-        float resistanceForce = 0.5f * 1000 * rigidbody.velocity.magnitude * rigidbody.velocity.magnitude * 1 * 2 * Mathf.Exp(-3);
-        rigidbody.AddForce(-rigidbody.velocity.normalized * frictionalForce);
-        rigidbody.AddForce(-rigidbody.velocity.normalized * resistanceForce);
+        rigidbody.AddForce(-rigidbody.velocity.normalized * calcualteFrictionalForce());
+        rigidbody.AddForce(-rigidbody.velocity.normalized * calculateResidualForce());
     }
 
+    float calcualteFrictionalForce(){
+        // Ffr = 1/2 * rho * V * V * S * Cf
+        float Cf = 0.004f;
+        // S = Cws * Sqrt( Vudw * Len )
+        float S = 2.6f * Mathf.Sqrt(underwaterVolume * shipLenght);
+        float Ffr = 0.5f * 1000 * Mathf.Pow(rigidbody.velocity.magnitude, 2) * S * Cf;
+        return Ffr;
+    }
+
+    float calculateResidualForce(){
+        // Fr = 1/2 * rho * V * V * S * Cr
+        float Cr = 2 * Mathf.Exp(-3);
+        float Fr = 0.5f * 1000 * Mathf.Pow(rigidbody.velocity.magnitude, 2) * Cr;
+        return Fr;
+    }
 
 
     float CalculateSurfaceArea(Mesh mesh) {
