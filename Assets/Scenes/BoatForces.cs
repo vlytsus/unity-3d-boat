@@ -25,22 +25,22 @@ public class BoatForces : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A))
         {
-            rigidbody.AddRelativeTorque(new Vector3(0, -10, 0), ForceMode.Impulse);
+            rigidbody.AddRelativeTorque(new Vector3(0, -100, 0), ForceMode.Impulse);
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            rigidbody.AddRelativeTorque(new Vector3(0, 10, 0), ForceMode.Impulse);
+            rigidbody.AddRelativeTorque(new Vector3(0, 100, 0), ForceMode.Impulse);
         }
 
         if (Input.GetKey(KeyCode.W))
         {
-            rigidbody.AddForce(transform.forward * 15000);
+            rigidbody.AddForce(transform.forward * 10000);
         } 
         
         if (Input.GetKey(KeyCode.S))
         {
-            rigidbody.AddForce(transform.forward * -15000);
+            rigidbody.AddForce(transform.forward * -10000);
         }
 
         waterArround.transform.position = new Vector3(transform.position.x + 12, waterArround.transform.position.y, transform.position.z + 12);
