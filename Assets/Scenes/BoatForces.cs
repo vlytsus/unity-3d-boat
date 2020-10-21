@@ -1,7 +1,4 @@
-﻿using MathNet.Numerics;
-using MathNet.Numerics.LinearAlgebra.Double;
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
