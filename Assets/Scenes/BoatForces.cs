@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class BoatForces : MonoBehaviour
 {
-    public float thrust = 0.0f;
-    public float windAngle = 0.0f;
-    public float angleOfAttack = 0.0f;
     public Rigidbody boatRigidbody;
     public GameObject rudder;
     public GameObject waterArround;
     public GameObject underWaterObj;
     public GameObject windObj;
+    public GameObject bom;
+    public GameObject staksel;
 
     public Vector3 directionVector;
-    public Vector3 transformVector;
 
     private Mesh underWaterMesh;
     public float underwaterSurface = 18.0f;
@@ -71,7 +69,16 @@ public class BoatForces : MonoBehaviour
 
         Debug.Log("Result angle = " + angle + " force = " + force);
         return force;
-    }   
+    }
+
+    void rotateSail(GameObject sail, int angle){
+        HingeJoint hinge = sail.GetComponent<HingeJoint>();
+        JointSpring hingeSpring = hinge.spring;
+        hingeSpring.targetPosition += angle;
+        if(Mathf.Abs(hingeSpring.targetPosition) < 45){
+            hinge.spring = hingeSpring;
+        }
+    }
 
     void Update()
     {
@@ -84,10 +91,22 @@ public class BoatForces : MonoBehaviour
             boatRigidbody.AddForceAtPosition(transform.right * 3000, rudder.transform.position, ForceMode.Force);
         }
 
+        if (Input.GetKey(KeyCode.Q))
+        {
+            rotateSail(staksel, 2);
+            rotateSail(bom, 2);
+        }
+
         if (Input.GetKey(KeyCode.D))
         {
             //boatRigidbody.AddRelativeTorque(new Vector3(0, 100, 0), ForceMode.Impulse);
             boatRigidbody.AddForceAtPosition(-transform.right * 3000, rudder.transform.position, ForceMode.Force);
+        }
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            rotateSail(staksel, -2);
+            rotateSail(bom, -2);
         }
 
         if (Input.GetKey(KeyCode.W))
@@ -104,9 +123,38 @@ public class BoatForces : MonoBehaviour
     
     }
 
+    void addForceToSail(GameObject sail){        
+        int windAngle = (int)windObj.transform.eulerAngles.y;
+        int boatAngle = (int)transform.eulerAngles.y;        
+        int absoluteAngle = boatAngle - windAngle;
+
+        
+
+        HingeJoint hinge = sail.GetComponent<HingeJoint>();
+        JointSpring hingeSpring = hinge.spring;
+        
+        //absoluteAngle -= (int)hingeSpring.targetPosition;
+        
+        absoluteAngle = (int)Vector3.Angle(sail.transform.forward, windObj.transform.forward);
+
+
+        Rigidbody sailRb = sail.GetComponent<Rigidbody>();
+        sailRb.AddForce(transform.forward * getForceAtAngle(absoluteAngle) * 10);
+    }
+
     void FixedUpdate()
     {        
-        boatRigidbody.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
+        //boatRigidbody.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
+
+        //Rigidbody stakselRb = staksel.GetComponent<Rigidbody>();
+        //Rigidbody bomRb = bom.GetComponent<Rigidbody>();
+        //stakselRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
+        //bomRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
+
+        //addForceToSail(staksel);
+        addForceToSail(bom);
+
+
         boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calcualteFrictionalForce());
         boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calculateResidualForce());
         
