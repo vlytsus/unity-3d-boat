@@ -17,9 +17,17 @@ public class BoatForces : MonoBehaviour
     private Mesh underWaterMesh;
     public float underwaterSurface = 18.0f;
     public float underwaterVolume = 8.0f; 
-    public float shipLenght = 8.0f; 
+    public float shipLenght = 8.0f;
 
-    public float[] angleToForce;
+    public float bomAreaM2 = 9.0f;
+    public float spinakerAreaM2 = 7.0f;
+
+    public float[] angleToLiftCoeficient;
+
+    public float windSpeed = 10;
+
+
+    private float waterRho = 1000.0f;
     
     void Start()
     {
@@ -31,44 +39,45 @@ public class BoatForces : MonoBehaviour
     } 
 
     void initAngleForces(){
-        angleToForce = new float[100];
+        angleToLiftCoeficient = new float[100];
         for(int i= 10; i < 100; i++) {
             float force = calcForce4(i);
             Debug.Log("Result for " + i + "=" + force);
-            angleToForce[i] = force;
+            angleToLiftCoeficient[i] = force;
         }
     }
 
     // Calculate forces using Excel calculated polynomial trend
     // training data
-    // angle: 10,  20,  30,  40,  50, 60, 70, 80, 90, 100
-    // force: 16, 130, 144, 145, 124, 96, 72, 50, 28, 14
+    // angle:        10, 20, 30,   40,   50,   60,  70,  80,  90,  100
+    // coefficient: 1.6, 13, 14.4, 14.5, 12.4, 9.6, 7.2, 5.0, 2.8, 1.4
     // Polynome: -2.36451E-05*X4 + 0.006606935*X3 - 0.659066142*X2 + 25.33863636*X - 173.9166667
     float calcForce4(float x){
         double y =
-            -0.236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
-            + 6.606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
-            -65.90661422  * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
-            + 253.3863636 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
-            -173.9166667;
+            -0.00236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
+            + 0.06606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
+            -0.6590661422  * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
+            + 2.533863636 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
+            -1.7391666;
         return (float)y;
     }
 
-    float getForceAtAngle(int angle)
+
+    float getLiftCoeficientAtAngle(int angle)
     {
-        float force = 0;
+        float liftCoeficient = 0;
         if(angle < 10){
-            force = 0;
+            liftCoeficient = 0;
         } else if(angle > 90 && angle < 270 ){
-            force = angleToForce[99];
+            liftCoeficient = angleToLiftCoeficient[99];
         } else if(angle >= 270 ){
-            force = angleToForce[360 - angle];         
+            liftCoeficient = angleToLiftCoeficient[360 - angle];         
         } else {
-            force = angleToForce[angle];
+            liftCoeficient = angleToLiftCoeficient[angle];
         } 
 
-        Debug.Log("Result angle = " + angle + " force = " + force);
-        return force;
+        Debug.Log("Result angle = " + angle + " liftCoeficient = " + liftCoeficient);
+        return liftCoeficient;
     }
 
     void rotateSail(GameObject sail, int angle){
@@ -123,23 +132,46 @@ public class BoatForces : MonoBehaviour
     
     }
 
-    void addForceToSail(GameObject sail){        
-        int windAngle = (int)windObj.transform.eulerAngles.y;
-        int boatAngle = (int)transform.eulerAngles.y;        
-        int absoluteAngle = boatAngle - windAngle;
+    Vector3 calculateApparentWindVector(Vector3 windSpeedVector, Vector3 boatSpeedVector){
+        Debug.Log("windSpeedVector=" + windSpeedVector);
+        Debug.Log("boatSpeedVector=" + boatSpeedVector);
+        Debug.Log("ApparentWindVector=" + (windSpeedVector - boatSpeedVector));
+        return windSpeedVector - boatSpeedVector;
+    }
 
+    float calculateLiftForce(float liftCoeficient, float velocity, float sailArea){
+        // Fr = 1/2 * rho * V * V * S * Cl
+        float Fr = 0.5f * waterRho * velocity * velocity * sailArea * liftCoeficient;
+        
+        Debug.Log("velocity = " + velocity + " liftCoeficient=" + liftCoeficient + " sailArea = " + sailArea);
+        Debug.Log("Lift force = " + Fr);
+        return Fr;
+    }
+
+    void addForceToSail(GameObject sail){        
+        //int windAngle = (int)windObj.transform.eulerAngles.y;
+        //int boatAngle = (int)transform.eulerAngles.y;        
+        //int absoluteAngle = boatAngle - windAngle;
         
 
         HingeJoint hinge = sail.GetComponent<HingeJoint>();
         JointSpring hingeSpring = hinge.spring;
         
         //absoluteAngle -= (int)hingeSpring.targetPosition;
-        
-        absoluteAngle = (int)Vector3.Angle(sail.transform.forward, windObj.transform.forward);
 
+        Vector3 trueWind = windObj.transform.forward * windSpeed;
+        Vector3 apparentWind = calculateApparentWindVector(trueWind, boatRigidbody.velocity);
+        int apparentWindAngle = (int)Vector3.Angle(-sail.transform.forward, -apparentWind);
+        float liftCoeficient = getLiftCoeficientAtAngle(apparentWindAngle);
+        float windVelocity = apparentWind.magnitude;
+        float liftForce = calculateLiftForce(liftCoeficient/500, windVelocity, bomAreaM2);
 
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();
-        sailRb.AddForce(transform.forward * getForceAtAngle(absoluteAngle) * 10);
+        Debug.DrawRay(transform.position + sailRb.centerOfMass, -apparentWind, Color.blue, 0.0f, false);
+        Debug.DrawRay(transform.position + sailRb.centerOfMass, -sail.transform.forward, Color.red, 0.0f, false);
+        Debug.DrawRay(transform.position + sailRb.centerOfMass, -sail.transform.right * liftForce, Color.red, 0.0f, false);
+        
+        sailRb.AddForce(-sail.transform.right * liftForce);
     }
 
     void FixedUpdate()
@@ -193,14 +225,14 @@ public class BoatForces : MonoBehaviour
         float Cf = 0.004f;
         // S = Cws * Sqrt( Vudw * Len )
         float S = 2.6f * Mathf.Sqrt(underwaterVolume * shipLenght);
-        float Ffr = 0.5f * 1000 * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * S * Cf;
+        float Ffr = 0.5f * waterRho * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * S * Cf;
         return Ffr;
     }
 
     float calculateResidualForce(){
         // Fr = 1/2 * rho * V * V * S * Cr
         float Cr = 2 * Mathf.Exp(-3);
-        float Fr = 0.5f * 1000 * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * Cr;
+        float Fr = 0.5f * waterRho * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * Cr;
         return Fr;
     }
 
