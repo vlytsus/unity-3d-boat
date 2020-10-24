@@ -159,16 +159,16 @@ public class BoatForces : MonoBehaviour
         return windSpeedVector - boatSpeedVector;
     }
 
-    float calculateLiftForce(float liftCoeficient, float velocity, float sailArea){
-        // Fr = 1/2 * rho * V * V * S * Cl
-        float Fr = 0.5f * waterRho * velocity * velocity * sailArea * liftCoeficient;
+    float calculateSailForce(float coeficient, float velocity, float sailArea){
+        // Fr = 1/2 * rho * V * V * S * C
+        float Fr = 0.5f * waterRho * velocity * velocity * sailArea * coeficient;
         
-        Debug.Log("velocity = " + velocity + " liftCoeficient=" + liftCoeficient + " sailArea = " + sailArea);
-        Debug.Log("Lift force = " + Fr);
+        Debug.Log("velocity = " + velocity + " coeficient=" + coeficient + " sailArea = " + sailArea);
+        Debug.Log("Force = " + Fr);
         return Fr;
     }
 
-    void addForceToSail(GameObject sail){        
+    void addForceToSail(GameObject sail, float sailAreaM2){        
         //int windAngle = (int)windObj.transform.eulerAngles.y;
         //int boatAngle = (int)transform.eulerAngles.y;        
         //int absoluteAngle = boatAngle - windAngle;
@@ -183,15 +183,20 @@ public class BoatForces : MonoBehaviour
         Vector3 apparentWind = calculateApparentWindVector(trueWind, boatRigidbody.velocity);
         int apparentWindAngle = (int)Vector3.Angle(-sail.transform.forward, -apparentWind);
         float liftCoeficient = getCoeficientAtAngle(angleToLiftCoeficient, apparentWindAngle);
+        float dragCoeficient = getCoeficientAtAngle(angleToDragCoeficient, apparentWindAngle);
         float windVelocity = apparentWind.magnitude;
-        float liftForce = calculateLiftForce(liftCoeficient/500, windVelocity, mainSailAreaM2);
+        float liftForce = calculateSailForce(liftCoeficient/500, windVelocity, sailAreaM2);
+        float dragForce = calculateSailForce(dragCoeficient/500, windVelocity, sailAreaM2);
 
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();
         Debug.DrawRay(transform.position + sailRb.centerOfMass, -apparentWind, Color.blue, 0.0f, false);
         Debug.DrawRay(transform.position + sailRb.centerOfMass, -sail.transform.forward, Color.red, 0.0f, false);
         Debug.DrawRay(transform.position + sailRb.centerOfMass, -sail.transform.right * liftForce, Color.red, 0.0f, false);
         
-        sailRb.AddForce(-sail.transform.right * liftForce);
+        //sailRb.AddForce(-sail.transform.right * liftForce);
+        sailRb.AddForce(apparentWind.normalized * dragForce);
+        Vector3 liftForceDirection = Quaternion.AngleAxis(-45, Vector3.up) * apparentWind.normalized;
+        sailRb.AddForce(liftForceDirection * liftForce);
     }
 
     void FixedUpdate()
@@ -204,7 +209,8 @@ public class BoatForces : MonoBehaviour
         //mainSailRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
 
         //addForceToSail(headSail);
-        addForceToSail(mainSail);
+        addForceToSail(headSail, headSailAreaM2);
+        addForceToSail(mainSail, mainSailAreaM2);
 
 
         boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calcualteFrictionalForce());
