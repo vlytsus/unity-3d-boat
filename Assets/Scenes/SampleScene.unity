@@ -921,15 +921,16 @@ MonoBehaviour:
   waterArround: {fileID: 1258855799}
   underWaterObj: {fileID: 590823595}
   windObj: {fileID: 952299484}
-  bom: {fileID: 1955769330}
-  staksel: {fileID: 1507144694}
+  headSail: {fileID: 1507144694}
+  mainSail: {fileID: 1955769330}
   directionVector: {x: 0, y: 0, z: 0}
   underwaterSurface: 0
   underwaterVolume: 8
   shipLenght: 8
-  bomAreaM2: 9
-  spinakerAreaM2: 7
+  mainSailAreaM2: 9
+  headSailAreaM2: 7
   angleToLiftCoeficient: []
+  angleToDragCoeficient: []
   windSpeed: 10
 --- !u!65 &683053559
 BoxCollider:
