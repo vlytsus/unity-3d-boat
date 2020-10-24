@@ -324,7 +324,7 @@ GameObject:
   - component: {fileID: 295545806}
   - component: {fileID: 295545807}
   m_Layer: 0
-  m_Name: Floater (3)
+  m_Name: FloaterBackRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -342,7 +342,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &295545807
 MonoBehaviour:
@@ -463,7 +463,7 @@ GameObject:
   - component: {fileID: 486079803}
   - component: {fileID: 486079804}
   m_Layer: 0
-  m_Name: Floater (1)
+  m_Name: Floater BackLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,7 +481,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &486079804
 MonoBehaviour:
@@ -862,8 +862,8 @@ Transform:
   - {fileID: 52089035}
   - {fileID: 36766442}
   - {fileID: 84740766}
-  - {fileID: 486079803}
   - {fileID: 295545806}
+  - {fileID: 486079803}
   - {fileID: 963194228}
   - {fileID: 590823596}
   - {fileID: 1507144695}
