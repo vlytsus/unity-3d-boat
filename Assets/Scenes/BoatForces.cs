@@ -9,7 +9,7 @@ public class BoatForces : MonoBehaviour
     public GameObject waterArround;
     public GameObject underWaterObj;
     public GameObject windObj;
-    public GameObject bom;
+    public GameObject mainsail;
     public GameObject staksel;
 
     public Vector3 directionVector;
@@ -19,15 +19,14 @@ public class BoatForces : MonoBehaviour
     public float underwaterVolume = 8.0f; 
     public float shipLenght = 8.0f;
 
-    public float bomAreaM2 = 9.0f;
-    public float spinakerAreaM2 = 7.0f;
+    public float mainsailAreaM2 = 9.0f;
+    public float headsailAreaM2 = 7.0f;
 
     public float[] angleToLiftCoeficient;
 
     public float windSpeed = 10;
 
-
-    private float waterRho = 1000.0f;
+    private float waterRho = 1030.0f; //salt water density
     
     void Start()
     {
@@ -41,7 +40,7 @@ public class BoatForces : MonoBehaviour
     void initAngleForces(){
         angleToLiftCoeficient = new float[100];
         for(int i= 10; i < 100; i++) {
-            float force = calcForce4(i);
+            float force = calcLiftForce4(i);
             Debug.Log("Result for " + i + "=" + force);
             angleToLiftCoeficient[i] = force;
         }
@@ -52,7 +51,20 @@ public class BoatForces : MonoBehaviour
     // angle:        10, 20, 30,   40,   50,   60,  70,  80,  90,  100
     // coefficient: 1.6, 13, 14.4, 14.5, 12.4, 9.6, 7.2, 5.0, 2.8, 1.4
     // Polynome: -2.36451E-05*X4 + 0.006606935*X3 - 0.659066142*X2 + 25.33863636*X - 173.9166667
-    float calcForce4(float x){
+    float calcLiftForce4(float x){
+        double y =
+            -0.00236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
+            + 0.06606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
+            -0.6590661422  * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
+            + 2.533863636 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
+            -1.7391666;
+        return (float)y;
+    }
+
+        // angle:        10, 20, 30,   40,   50,   60,  70,  80,  90,  100
+    // coefficient: 1.6, 13, 14.4, 14.5, 12.4, 9.6, 7.2, 5.0, 2.8, 1.4
+    // Polynome: -2.36451E-05*X4 + 0.006606935*X3 - 0.659066142*X2 + 25.33863636*X - 173.9166667
+    float calcDragForce4(float x){
         double y =
             -0.00236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
             + 0.06606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
@@ -103,7 +115,7 @@ public class BoatForces : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
         {
             rotateSail(staksel, 2);
-            rotateSail(bom, 2);
+            rotateSail(mainsail, 2);
         }
 
         if (Input.GetKey(KeyCode.D))
@@ -115,7 +127,7 @@ public class BoatForces : MonoBehaviour
         if (Input.GetKey(KeyCode.E))
         {
             rotateSail(staksel, -2);
-            rotateSail(bom, -2);
+            rotateSail(mainsail, -2);
         }
 
         if (Input.GetKey(KeyCode.W))
@@ -164,7 +176,7 @@ public class BoatForces : MonoBehaviour
         int apparentWindAngle = (int)Vector3.Angle(-sail.transform.forward, -apparentWind);
         float liftCoeficient = getLiftCoeficientAtAngle(apparentWindAngle);
         float windVelocity = apparentWind.magnitude;
-        float liftForce = calculateLiftForce(liftCoeficient/500, windVelocity, bomAreaM2);
+        float liftForce = calculateLiftForce(liftCoeficient/500, windVelocity, mainsailAreaM2);
 
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();
         Debug.DrawRay(transform.position + sailRb.centerOfMass, -apparentWind, Color.blue, 0.0f, false);
@@ -179,12 +191,12 @@ public class BoatForces : MonoBehaviour
         //boatRigidbody.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
 
         //Rigidbody stakselRb = staksel.GetComponent<Rigidbody>();
-        //Rigidbody bomRb = bom.GetComponent<Rigidbody>();
+        //Rigidbody mainsailRb = mainsail.GetComponent<Rigidbody>();
         //stakselRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
-        //bomRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
+        //mainsailRb.AddForce(transform.forward * getForceAtAngle((int)transform.eulerAngles.y) * 10);
 
         //addForceToSail(staksel);
-        addForceToSail(bom);
+        addForceToSail(mainsail);
 
 
         boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calcualteFrictionalForce());

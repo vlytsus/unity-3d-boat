@@ -1311,7 +1311,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_Name
-      value: Bom
+      value: MainSail
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c26004c5036de024c90037e2a75d7422, type: 3}
@@ -6743,7 +6743,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1258855800}
   m_Layer: 1
-  m_Name: water
+  m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6862,7 +6862,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_Name
-      value: Staksel
+      value: HeadSail
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c26004c5036de024c90037e2a75d7422, type: 3}
