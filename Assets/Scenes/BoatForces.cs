@@ -212,9 +212,9 @@ public class BoatForces : MonoBehaviour
         if(!pause) sailRb.AddForce(dragForce);       
         if(!pause) sailRb.AddForce(liftForce);
 
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce, Color.blue, 0.0f, false);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce, Color.red, 0.0f, false);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind.normalized * 10, Color.green, 0.0f, false);
+        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
+        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
+        //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind.normalized * 10, Color.green, 0.0f, false);
     }
 
     void FixedUpdate()
@@ -248,7 +248,7 @@ public class BoatForces : MonoBehaviour
 
         //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, windObj.transform.forward * 100, Color.green, 0.0f, false);
         //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, vsVector * 10, Color.green, 0.0f, false);
-        //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, boatRigidbody.velocity * 10, Color.red, 0.0f, false);
+        Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, boatRigidbody.velocity * 10, Color.green, 0.0f, false);
     }
 
     float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up) {
