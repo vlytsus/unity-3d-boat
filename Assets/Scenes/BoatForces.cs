@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoatForces : MonoBehaviour
 {
     public Rigidbody boatRigidbody;
+    public Rigidbody keelRigidbody;
     public GameObject rudder;
     public GameObject waterArround;
     public GameObject underWaterObj;
@@ -15,8 +16,8 @@ public class BoatForces : MonoBehaviour
     public Vector3 directionVector;
 
     private Mesh underWaterMesh;
-    public float underwaterSurface = 18.0f;
-    public float underwaterVolume = 8.0f; 
+    public float underwaterSurface = 16.0f;
+    public float underwaterVolume = 6.0f; 
     public float shipLenght = 8.0f;
 
     public float mainSailAreaM2 = 9.0f;
@@ -25,11 +26,11 @@ public class BoatForces : MonoBehaviour
     public float[] angleToLiftCoeficient;
     public float[] angleToDragCoeficient;
 
-    public float windSpeed = 10;
+    public float windSpeed = 6;
 
     private float waterRho = 1030.0f; //salt water density
 
-    public bool pause = true;
+    public bool pause = false;
     
     void Start()
     {
@@ -97,7 +98,7 @@ public class BoatForces : MonoBehaviour
         HingeJoint hinge = sail.GetComponent<HingeJoint>();
         JointSpring hingeSpring = hinge.spring;
         hingeSpring.targetPosition += angle;
-        if(Mathf.Abs(hingeSpring.targetPosition) < 50){
+        if(Mathf.Abs(hingeSpring.targetPosition) < 60){
             hinge.spring = hingeSpring;
         }
     }
@@ -146,14 +147,6 @@ public class BoatForces : MonoBehaviour
             pause = !pause;
         }
 
-        if(pause){
-            boatRigidbody.drag = 100;
-            boatRigidbody.angularDrag = 10;
-        } else {
-            boatRigidbody.drag = 0;
-            boatRigidbody.angularDrag = 5;
-        }
-
         waterArround.transform.position = new Vector3(transform.position.x + 12, waterArround.transform.position.y, transform.position.z + 12);
     
     }
@@ -192,17 +185,13 @@ public class BoatForces : MonoBehaviour
         float dragCoeficient = getCoeficientAtAngle(angleToDragCoeficient, apparentWindAngle);
         float windVelocity = apparentWind.magnitude;
 
-
-        float test = Vector3.SignedAngle(-apparentWind.normalized, sailVector.normalized, Vector3.up);
-        //if(Vector3.Dot(-apparentWind.normalized, sailVector.normalized) < 0){
         float angle = Vector3.SignedAngle(-apparentWind.normalized, sailVector.normalized, Vector3.up);
         if(Mathf.Abs(angle) < 90){
             angle = -90 * Mathf.Sign(angle);
         } else {
             angle = 90 * Mathf.Sign(angle);
         }
-
-        Debug.Log("test = " + test + " angle = " + angle);
+        Debug.Log("angle = " + angle);
 
         Vector3 liftForceDirection = Quaternion.AngleAxis(angle, Vector3.up) * apparentWind.normalized;
         Vector3 liftForce = liftForceDirection * calculateSailForce(liftCoeficient/500, windVelocity, sailAreaM2);
@@ -236,15 +225,20 @@ public class BoatForces : MonoBehaviour
         
         var sideSpeed = Vector3.Dot(boatRigidbody.velocity, transform.right);
         var vsVector = Vector3.forward;
+
+        int angle = 90;
         if(sideSpeed > 0.0f){
-            vsVector = -transform.right * sideSpeed * sideSpeed;
+            angle = -90;
+            //vsVector = -transform.right * sideSpeed * sideSpeed;
         } else {
-            vsVector = transform.right * sideSpeed * sideSpeed;
+            //vsVector = transform.right * sideSpeed * sideSpeed;
         }
+        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(angle, Vector3.up) * boatRigidbody.velocity.normalized;
         
-        //Debug.Log("sideSpeed=" + sideSpeed);
-        directionVector = boatRigidbody.velocity.normalized;
-        if(!pause) boatRigidbody.AddForce(vsVector * 800);
+        //Debug.Log("sideSpeed=" + sideSpeed);      
+
+        
+        if(!pause) keelRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * 2);
 
         //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, windObj.transform.forward * 100, Color.green, 0.0f, false);
         //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, vsVector * 10, Color.green, 0.0f, false);
