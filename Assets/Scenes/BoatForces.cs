@@ -21,6 +21,7 @@ public class BoatForces : MonoBehaviour
     public float windSpeed = 6;
 
     private static float waterRho = 1030.0f; //salt water density
+    private static float airRho = 1.2f; //air density
 
     // TODO Experimental constants goes here
     const float mainSailAreaM2 = 20.0f; // Width * Height / 2
@@ -28,8 +29,8 @@ public class BoatForces : MonoBehaviour
     const float underwaterSurface = 18.5f; //also known as Wetted surface
     const float underwaterVolume = 3.3f; //also known as Displacement
     const float shipLenght = 8.3f; // Water Line Length
-    const float liftCoeficientExperimentalFix = 800f;
-    const float dragCoeficientExperimentalFix = 800f;
+    const float liftCoeficientExperimentalFix = 1.0f; //TODO ideally should be 1.0 if all formulas are correct
+    const float dragCoeficientExperimentalFix = 1.0f; //TODO ideally should be 1.0 if all formulas are correct
 
     const int maxSailAngle = 70;
     
@@ -216,7 +217,7 @@ public class BoatForces : MonoBehaviour
 
     float calculateSailForce(float coeficient, float velocity, float sailArea) {
         // Fs = 1/2 * rho * V * V * S * C
-        float Fr = 0.5f * waterRho * velocity * velocity * sailArea * coeficient;
+        float Fr = 0.5f * airRho * velocity * velocity * sailArea * coeficient;
         return Fr;
     }
 
