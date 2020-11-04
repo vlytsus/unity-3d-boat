@@ -984,7 +984,7 @@ MonoBehaviour:
   windObj: {fileID: 952299484}
   headSail: {fileID: 1507144694}
   mainSail: {fileID: 1529088277}
-  yachtConfigFactory: {fileID: 718557867}
+  yachtPhysics: {fileID: 718557867}
   windSpeed: 10
 --- !u!1 &705507993
 GameObject:
@@ -1089,7 +1089,7 @@ GameObject:
   - component: {fileID: 718557869}
   - component: {fileID: 718557867}
   m_Layer: 0
-  m_Name: WikiDefaultYachtFactory
+  m_Name: WikiDefaultYachtPhysics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

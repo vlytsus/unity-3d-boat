@@ -15,7 +15,7 @@ public class BoatForces : MonoBehaviour
 
     private Mesh underWaterMesh;
 
-    public IYachtConfigFactory yachtConfigFactory;
+    public IYachtPhysics yachtPhysics;
 
     public float windSpeed = 6;
 
@@ -178,13 +178,13 @@ public class BoatForces : MonoBehaviour
     }
 
     void initYachtParameters() {
-        angleToLiftCoeficient = yachtConfigFactory.prepareSailLiftCoefficients();
-        angleToDragCoeficient = yachtConfigFactory.prepareSailDragCoefficients();
-        mainSailAreaM2 = yachtConfigFactory.getMainSailAreaM2();
-        headSailAreaM2 = yachtConfigFactory.getHeadSailAreaM2();
-        underwaterSurface = yachtConfigFactory.getUnderwaterSurface();
-        underwaterVolume = yachtConfigFactory.getUnderwaterVolume();
-        shipLenght = yachtConfigFactory.getShipLenght();
+        angleToLiftCoeficient = yachtPhysics.prepareSailLiftCoefficients();
+        angleToDragCoeficient = yachtPhysics.prepareSailDragCoefficients();
+        mainSailAreaM2 = yachtPhysics.getMainSailAreaM2();
+        headSailAreaM2 = yachtPhysics.getHeadSailAreaM2();
+        underwaterSurface = yachtPhysics.getUnderwaterSurface();
+        underwaterVolume = yachtPhysics.getUnderwaterVolume();
+        shipLenght = yachtPhysics.getShipLenght();
     }
 
     float calcualteFrictionalForce() {

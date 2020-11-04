@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class IYachtConfigFactory : MonoBehaviour {
+public abstract class IYachtPhysics : MonoBehaviour {
     public abstract float[] prepareSailDragCoefficients();
 
     public abstract float[] prepareSailLiftCoefficients();
