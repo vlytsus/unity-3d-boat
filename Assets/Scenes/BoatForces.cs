@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoatForces : MonoBehaviour
 {
-    public Rigidbody boatRigidbody;
+    public Rigidbody yachtRigidbody;
     public Rigidbody keelRigidbody;
     public GameObject rudder;
     public GameObject waterArround;
@@ -15,44 +15,38 @@ public class BoatForces : MonoBehaviour
 
     private Mesh underWaterMesh;
 
-    public float[] angleToLiftCoeficient;
-    public float[] angleToDragCoeficient;
+    public IYachtConfigFactory yachtConfigFactory;
 
     public float windSpeed = 6;
 
-    private static float waterRho = 1030.0f; //salt water density
-    private static float airRho = 1.2f; //air density
+    private float[] angleToLiftCoeficient;
+    private float[] angleToDragCoeficient;
 
-    // TODO Experimental constants goes here
-    const float mainSailAreaM2 = 20.0f; // Width * Height / 2
-    const float headSailAreaM2 = 15.0f; // Width * Height / 2
-    const float underwaterSurface = 18.5f; //also known as Wetted surface
-    const float underwaterVolume = 3.3f; //also known as Displacement
-    const float shipLenght = 8.3f; // Water Line Length
-    const float liftCoeficientExperimentalFix = 1.0f; //TODO ideally should be 1.0 if all formulas are correct
-    const float dragCoeficientExperimentalFix = 1.0f; //TODO ideally should be 1.0 if all formulas are correct
+    const float waterRho = 1030.0f; //salt water density
+    const float airRho = 1.2f; //air density
 
+    float mainSailAreaM2; // Width * Height / 2
+    float headSailAreaM2; // Width * Height / 2
+    float underwaterSurface; //also known as Wetted surface
+    float underwaterVolume; //also known as Displacement
+    float shipLenght; // Water Line Length
+    
     const int maxSailAngle = 70;
     
     void Start() {
         underWaterMesh = underWaterObj.GetComponent<MeshFilter>().mesh;
         //underwaterSurface = CalculateSurfaceArea(underWaterMesh) / 2;
         //underwaterVolume = nderWaterObj.transform.localScale 
-        initAngleForces();  
+        initYachtParameters();
     }
 
     void Update() {
-        //boatRigidbody.AddForceAtPosition(transform.right * 400, rudder.transform.position, ForceMode.Force);
-        //boatRigidbody.AddForce(transform.forward * 10000);
-
         if (Input.GetKey(KeyCode.A)){
-            //boatRigidbody.AddRelativeTorque(new Vector3(0, -100, 0), ForceMode.Impulse);
-            boatRigidbody.AddForceAtPosition(transform.right * 3000, rudder.transform.position, ForceMode.Force);
+            yachtRigidbody.AddForceAtPosition(transform.right * 3000, rudder.transform.position, ForceMode.Force);
         }
 
         if (Input.GetKey(KeyCode.D)) {
-            //boatRigidbody.AddRelativeTorque(new Vector3(0, 100, 0), ForceMode.Impulse);
-            boatRigidbody.AddForceAtPosition(-transform.right * 3000, rudder.transform.position, ForceMode.Force);
+            yachtRigidbody.AddForceAtPosition(-transform.right * 3000, rudder.transform.position, ForceMode.Force);
         }
 
         if (Input.GetKey(KeyCode.Q)) {
@@ -72,11 +66,11 @@ public class BoatForces : MonoBehaviour
         }
 
         if (Input.GetKey(KeyCode.W)) {
-            boatRigidbody.AddForce(transform.forward * 10000);
+            yachtRigidbody.AddForce(transform.forward * 10000);
         } 
         
         if (Input.GetKey(KeyCode.S)) {
-            boatRigidbody.AddForce(transform.forward * -10000);
+            yachtRigidbody.AddForce(transform.forward * -10000);
         }
 
         moveWaterAreaArroundShip();    
@@ -88,15 +82,12 @@ public class BoatForces : MonoBehaviour
         addLiftForceToSail(mainSail, mainSailAreaM2);
         addDragForceToSail(mainSail, mainSailAreaM2);
 
-        boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calcualteFrictionalForce());
-        boatRigidbody.AddForce(-boatRigidbody.velocity.normalized * calculateResidualForce());
+        yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calcualteFrictionalForce());
+        yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calculateResidualForce());
 
         addHullDragForce();        
         addForceToKeel();
-
-        //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, windObj.transform.forward * 100, Color.green, 0.0f, false);
-        //Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, vsVector * 10, Color.green, 0.0f, false);
-        Debug.DrawRay(transform.position + boatRigidbody.centerOfMass, boatRigidbody.velocity * 10, Color.green, 0.0f, false);
+        Debug.DrawRay(transform.position + yachtRigidbody.centerOfMass, yachtRigidbody.velocity * 10, Color.green, 0.0f, false);
     }
 
     void rotateSail(GameObject sail, int angle) {
@@ -114,7 +105,7 @@ public class BoatForces : MonoBehaviour
 
     void addLiftForceToSail(GameObject sail, float sailAreaM2) {           
         Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = calculateApparentWindVector(trueWind, boatRigidbody.velocity);
+        Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
@@ -132,7 +123,7 @@ public class BoatForces : MonoBehaviour
     void addDragForceToSail(GameObject sail, float sailAreaM2) {  
         
         Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = calculateApparentWindVector(trueWind, boatRigidbody.velocity);
+        Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
@@ -153,8 +144,7 @@ public class BoatForces : MonoBehaviour
         } else {
             liftAngle = 90 * Mathf.Sign(liftAngle);
         }
-        Debug.Log("liftAngle = " + liftAngle);
-        
+        Debug.Log("liftAngle = " + liftAngle);        
         Vector3 liftForceDirection = Quaternion.AngleAxis(liftAngle, Vector3.up) * apparentWind.normalized;
         return liftForceDirection;
     }
@@ -170,9 +160,9 @@ public class BoatForces : MonoBehaviour
     //Beceause keel works kike a wing inder water
     //Keel force has lift effect, thus part of lift has forward vector (because of small side drag)
     void addForceToKeel() {
-        float sideSpeed = Vector3.Dot(boatRigidbody.velocity, transform.right);
+        float sideSpeed = Vector3.Dot(yachtRigidbody.velocity, transform.right);
         float rightAngle = -90 * Mathf.Sign(sideSpeed);
-        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * boatRigidbody.velocity.normalized;
+        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * yachtRigidbody.velocity.normalized;
         float antiDargCoeficient = 2; //TODO
         keelRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
     }
@@ -180,23 +170,21 @@ public class BoatForces : MonoBehaviour
     // TODO Hull has significant anti drag effect. But I don't have formaula for it yet.
     // It is similar to keel force but has no lift effect and influences whole yacht body
     void addHullDragForce() {
-        float sideSpeed = Vector3.Dot(boatRigidbody.velocity, transform.right);
+        float sideSpeed = Vector3.Dot(yachtRigidbody.velocity, transform.right);
         float rightAngle = -90 * Mathf.Sign(sideSpeed);
-        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * boatRigidbody.velocity.normalized;
+        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * yachtRigidbody.velocity.normalized;
         float antiDargCoeficient = 2; //TODO
-        boatRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
+        yachtRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
     }
 
-    void initAngleForces() {
-        angleToLiftCoeficient = new float[100];
-        angleToDragCoeficient = new float[100];
-        for(int i= 10; i < 100; i++) {
-            float liftCoeficient = calcLiftCoeficient4(i);
-            float dragCoeficient = calcDragCoeficient4(i);
-            angleToLiftCoeficient[i] = liftCoeficient / liftCoeficientExperimentalFix; //TODO
-            angleToDragCoeficient[i] = dragCoeficient / dragCoeficientExperimentalFix; //TODO
-            //Debug.Log("Drag result for " + i + " lift=" + liftCoeficient + " drag=" + dragCoeficient);
-        }
+    void initYachtParameters() {
+        angleToLiftCoeficient = yachtConfigFactory.prepareSailLiftCoefficients();
+        angleToDragCoeficient = yachtConfigFactory.prepareSailDragCoefficients();
+        mainSailAreaM2 = yachtConfigFactory.getMainSailAreaM2();
+        headSailAreaM2 = yachtConfigFactory.getHeadSailAreaM2();
+        underwaterSurface = yachtConfigFactory.getUnderwaterSurface();
+        underwaterVolume = yachtConfigFactory.getUnderwaterVolume();
+        shipLenght = yachtConfigFactory.getShipLenght();
     }
 
     float calcualteFrictionalForce() {
@@ -204,14 +192,14 @@ public class BoatForces : MonoBehaviour
         float Cf = 0.004f;
         // S = Cws * Sqrt( Vudw * Len )
         float S = 2.6f * Mathf.Sqrt(underwaterVolume * shipLenght);
-        float Ffr = 0.5f * waterRho * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * S * Cf;
+        float Ffr = 0.5f * waterRho * Mathf.Pow(yachtRigidbody.velocity.magnitude, 2) * S * Cf;
         return Ffr;
     }
 
     float calculateResidualForce() {
         // Fr = 1/2 * rho * V * V * S * Cr
         float Cr = 2 * Mathf.Exp(-3);
-        float Fr = 0.5f * waterRho * Mathf.Pow(boatRigidbody.velocity.magnitude, 2) * Cr;
+        float Fr = 0.5f * waterRho * Mathf.Pow(yachtRigidbody.velocity.magnitude, 2) * Cr;
         return Fr;
     }
 
@@ -219,33 +207,6 @@ public class BoatForces : MonoBehaviour
         // Fs = 1/2 * rho * V * V * S * C
         float Fr = 0.5f * airRho * velocity * velocity * sailArea * coeficient;
         return Fr;
-    }
-
-    // Calculate forces using Excel calculated polynomial trend
-    // training data
-    // angle:        10, 20, 30,   40,   50,   60,  70,  80,  90,  100
-    // coefficient: 1.6, 13, 14.4, 14.5, 12.4, 9.6, 7.2, 5.0, 2.8, 1.4
-    // Polynome: -2.36451E-05*X4 + 0.006606935*X3 - 0.659066142*X2 + 25.33863636*X - 173.9166667
-    float calcLiftCoeficient4(float x) {
-        double y =
-            -0.00236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
-            + 0.06606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
-            -0.6590661422  * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
-            + 2.533863636 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
-            -1.7391666;
-        return (float)y;
-    }
-
-    // angle:         10,    20,   30,  40,  50,   60,  70,  80,   90,  100
-    // coefficient: 0.15, 0.174, 0.22, 0.3, 0.4, 0.55, 0.7, 0.94, 1.28, 1.6
-    // Polynome: 1.16861E-06*X3 + 1.35431E-05*X2 + 0.001794328*X + 0.127066667
-    float calcDragCoeficient4(float x) {
-        double y =
-            + 0.001168609 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
-            + 0.013543124 * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
-            + 0.017943279 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
-            + 0.127066667;
-        return (float)y;
     }
 
     float getCoeficientAtAngle(float[] angleToCoeficient, int angle) {
@@ -265,9 +226,7 @@ public class BoatForces : MonoBehaviour
     float CalculateSurfaceArea(Mesh mesh) {
         var triangles = mesh.triangles;
         var vertices = mesh.vertices;
-
         double sum = 0.0;
-
         for(int i = 0; i < triangles.Length; i += 3) {
             Vector3 corner = vertices[triangles[i]];
             Vector3 a = vertices[triangles[i + 1]] - corner;
@@ -275,8 +234,6 @@ public class BoatForces : MonoBehaviour
 
             sum += Vector3.Cross(a, b).magnitude;
         }
-
         return (float)(sum/2.0);
     }
-
 }

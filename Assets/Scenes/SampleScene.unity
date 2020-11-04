@@ -216,7 +216,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &36766443
 MonoBehaviour:
@@ -355,7 +355,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &84740767
 MonoBehaviour:
@@ -402,7 +402,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &295545807
 MonoBehaviour:
@@ -541,7 +541,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &486079804
 MonoBehaviour:
@@ -684,7 +684,7 @@ Transform:
   m_LocalScale: {x: 1.0311064, y: 0.777295, z: 7}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &590823597
 BoxCollider:
@@ -853,7 +853,7 @@ GameObject:
   - component: {fileID: 683053556}
   - component: {fileID: 683053557}
   m_Layer: 0
-  m_Name: Boat
+  m_Name: Yacht
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -918,6 +918,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 763981848}
+  - {fileID: 1793174013}
   - {fileID: 36766442}
   - {fileID: 84740766}
   - {fileID: 295545806}
@@ -975,7 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e82e32e4f0dda94d9609c7904b5d92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boatRigidbody: {fileID: 683053555}
+  yachtRigidbody: {fileID: 683053555}
   keelRigidbody: {fileID: 761715433}
   rudder: {fileID: 1761794583}
   waterArround: {fileID: 1258855799}
@@ -983,16 +984,8 @@ MonoBehaviour:
   windObj: {fileID: 952299484}
   headSail: {fileID: 1507144694}
   mainSail: {fileID: 1529088277}
-  directionVector: {x: 0, y: 0, z: 0}
-  underwaterSurface: 0
-  underwaterVolume: 8
-  shipLenght: 8
-  mainSailAreaM2: 9
-  headSailAreaM2: 7
-  angleToLiftCoeficient: []
-  angleToDragCoeficient: []
+  yachtConfigFactory: {fileID: 718557867}
   windSpeed: 10
-  pause: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1085,6 +1078,49 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 57.9, y: -23.49, z: -25}
+--- !u!1 &718557866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 718557869}
+  - component: {fileID: 718557867}
+  m_Layer: 0
+  m_Name: WikiDefaultYachtFactory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &718557867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718557866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bbae85542642064e9378946601500ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &718557869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718557866}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.06286636, y: 4.472396, z: 0.91262126}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761715428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,7 +1687,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 8db3f0dbec4e534429f128155fc884fc,
         type: 3}
       propertyPath: m_Name
-      value: Yacht
+      value: YachtBodySkin
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8db3f0dbec4e534429f128155fc884fc,
         type: 3}
@@ -6588,7 +6624,7 @@ Transform:
   m_LocalScale: {x: 0.42709735, y: 0.7264819, z: 0.38447312}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 12.830001, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
@@ -6986,7 +7022,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
@@ -12090,7 +12126,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
@@ -12130,7 +12166,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_Name
-      value: MainSail2
+      value: MainSail
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
@@ -12367,8 +12403,55 @@ Transform:
   m_LocalScale: {x: 0.1, y: 1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 683053554}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90.00001}
+--- !u!1 &1793174012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1793174013}
+  - component: {fileID: 1793174014}
+  m_Layer: 0
+  m_Name: FloaterFrontCenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1793174013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793174012}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 5.61}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 683053554}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1793174014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793174012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9d048e5718643e4e9f6a11fa5d99da9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigidbody: {fileID: 683053555}
+  depthBeforeSubmerged: 1
+  displacementAmount: 3
+  waweHeight: 0
 --- !u!1 &1817948257
 GameObject:
   m_ObjectHideFlags: 0
@@ -12477,7 +12560,7 @@ Transform:
   m_Children:
   - {fileID: 761715429}
   m_Father: {fileID: 683053554}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1930308675
 BoxCollider:

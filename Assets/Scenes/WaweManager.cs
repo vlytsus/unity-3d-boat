@@ -12,26 +12,23 @@ public class WaweManager : MonoBehaviour
     public float speed = 1f;
     public float offset = 0f;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
+    private void Awake() {
+
+        if (instance == null) {
             instance = this;
-        } else if (instance != this)
-        {
+        } else if (instance != this) {
             Destroy(this);
         }
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         offset += Time.deltaTime * speed;
     }
 
-    public static float GetWaweHeight(float _x)
-    {
+    public static float GetWaweHeight(float _x) {
+
         return instance.amplitude * Mathf.Sin(_x / instance.lenght + instance.offset);
     }
 }
