@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WikiDefaultYachtFactory : IYachtPhysics {
+public class WikiDefaultYachtPhysics : IYachtPhysics {
 
     const float mainSailAreaM2 = 20.0f; // Width * Height / 2
     const float headSailAreaM2 = 15.0f; // Width * Height / 2
@@ -26,7 +26,15 @@ public class WikiDefaultYachtFactory : IYachtPhysics {
         return shipLenght;
     }
 
-    public override float[] prepareSailDragCoefficients() {
+    public override float[] prepareHeadSailDragCoefficients() {
+        return prepareMainSailDragCoefficients();
+    }
+
+    public override float[] prepareHeadSailLiftCoefficients() {
+        return prepareMainSailLiftCoefficients();
+    }
+
+    public override float[] prepareMainSailDragCoefficients() {
         float[] coeficientAtAngle = new float[100];
         for(int i= 10; i < 100; i++) {
             coeficientAtAngle[i] = calcDragCoeficient4(i);
@@ -34,7 +42,7 @@ public class WikiDefaultYachtFactory : IYachtPhysics {
         }
         return coeficientAtAngle;
     }
-    public override float[] prepareSailLiftCoefficients() {
+    public override float[] prepareMainSailLiftCoefficients() {
         float[] coeficientAtAngle = new float[100];
         for(int i= 10; i < 100; i++) {
             coeficientAtAngle[i] = calcLiftCoeficient4(i);

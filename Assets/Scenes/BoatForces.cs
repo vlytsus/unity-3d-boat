@@ -19,8 +19,10 @@ public class BoatForces : MonoBehaviour
 
     public float windSpeed = 6;
 
-    private float[] angleToLiftCoeficient;
-    private float[] angleToDragCoeficient;
+    private float[] headSailAngleToLiftCoeficient;
+    private float[] headSailAngleToDragCoeficient;
+    private float[] mainSailAngleToLiftCoeficient;
+    private float[] mainSailAngleToDragCoeficient;
 
     const float waterRho = 1030.0f; //salt water density
     const float airRho = 1.2f; //air density
@@ -38,6 +40,18 @@ public class BoatForces : MonoBehaviour
         //underwaterSurface = CalculateSurfaceArea(underWaterMesh) / 2;
         //underwaterVolume = nderWaterObj.transform.localScale 
         initYachtParameters();
+    }
+
+    void initYachtParameters() {
+        headSailAngleToLiftCoeficient = yachtPhysics.prepareHeadSailLiftCoefficients();
+        headSailAngleToDragCoeficient = yachtPhysics.prepareHeadSailDragCoefficients();
+        mainSailAngleToLiftCoeficient = yachtPhysics.prepareMainSailLiftCoefficients();
+        mainSailAngleToDragCoeficient = yachtPhysics.prepareMainSailDragCoefficients();
+        mainSailAreaM2 = yachtPhysics.getMainSailAreaM2();
+        headSailAreaM2 = yachtPhysics.getHeadSailAreaM2();
+        underwaterSurface = yachtPhysics.getUnderwaterSurface();
+        underwaterVolume = yachtPhysics.getUnderwaterVolume();
+        shipLenght = yachtPhysics.getShipLenght();
     }
 
     void Update() {
@@ -77,10 +91,10 @@ public class BoatForces : MonoBehaviour
     }
 
     void FixedUpdate() {
-        addLiftForceToSail(headSail, headSailAreaM2);
-        addDragForceToSail(headSail, headSailAreaM2);
-        addLiftForceToSail(mainSail, mainSailAreaM2);
-        addDragForceToSail(mainSail, mainSailAreaM2);
+        addLiftForceToSail(headSail, headSailAngleToLiftCoeficient, headSailAreaM2);
+        addDragForceToSail(headSail, headSailAngleToDragCoeficient, headSailAreaM2);
+        addLiftForceToSail(mainSail, mainSailAngleToLiftCoeficient, mainSailAreaM2);
+        addDragForceToSail(mainSail, mainSailAngleToLiftCoeficient, mainSailAreaM2);
 
         yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calcualteFrictionalForce());
         yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calculateResidualForce());
@@ -103,13 +117,13 @@ public class BoatForces : MonoBehaviour
         waterArround.transform.position = new Vector3(transform.position.x + 12, waterArround.transform.position.y, transform.position.z + 12);
     }
 
-    void addLiftForceToSail(GameObject sail, float sailAreaM2) {           
+    void addLiftForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {           
         Vector3 trueWind = windObj.transform.forward * windSpeed;
         Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
-        float liftCoeficient = getCoeficientAtAngle(angleToLiftCoeficient, apparentWindAngleGrad);
+        float liftCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
         float windVelocity = apparentWind.magnitude;
 
         Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
@@ -120,14 +134,14 @@ public class BoatForces : MonoBehaviour
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
     }
 
-    void addDragForceToSail(GameObject sail, float sailAreaM2) {  
+    void addDragForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {  
         
         Vector3 trueWind = windObj.transform.forward * windSpeed;
         Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
-        float dragCoeficient = getCoeficientAtAngle(angleToDragCoeficient, apparentWindAngleGrad);
+        float dragCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
         float windVelocity = apparentWind.magnitude;
         
         Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
@@ -175,16 +189,6 @@ public class BoatForces : MonoBehaviour
         Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * yachtRigidbody.velocity.normalized;
         float antiDargCoeficient = 2; //TODO
         yachtRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
-    }
-
-    void initYachtParameters() {
-        angleToLiftCoeficient = yachtPhysics.prepareSailLiftCoefficients();
-        angleToDragCoeficient = yachtPhysics.prepareSailDragCoefficients();
-        mainSailAreaM2 = yachtPhysics.getMainSailAreaM2();
-        headSailAreaM2 = yachtPhysics.getHeadSailAreaM2();
-        underwaterSurface = yachtPhysics.getUnderwaterSurface();
-        underwaterVolume = yachtPhysics.getUnderwaterVolume();
-        shipLenght = yachtPhysics.getShipLenght();
     }
 
     float calcualteFrictionalForce() {
