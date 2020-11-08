@@ -215,11 +215,9 @@ public class BoatForces : MonoBehaviour
 
     float getCoeficientAtAngle(float[] angleToCoeficient, int angle) {
         float coeficient = 0;
-        if(angle < 10){
+        if(angle < 0){
             coeficient = 0;
-        } else if(angle > 90 && angle < 270 ){
-            coeficient = angleToCoeficient[99];
-        } else if(angle >= 270 ){
+        } else if(angle > 180 ){
             coeficient = angleToCoeficient[360 - angle];         
         } else {
             coeficient = angleToCoeficient[angle];
