@@ -57,13 +57,13 @@ public class WikiDefaultYachtPhysics : IYachtPhysics {
     // coefficient: 1.6, 13, 14.4, 14.5, 12.4, 9.6, 7.2, 5.0, 2.8, 1.4
     // Polynome: -2.36451E-05*X4 + 0.006606935*X3 - 0.659066142*X2 + 25.33863636*X - 173.9166667
     float calcLiftCoeficient4(float x) {
-        double y =
-            -0.00236451049  * (double) Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
-            + 0.06606934732 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
-            -0.6590661422  * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
-            + 2.533863636 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
-            -1.7391666;
-        return (float)y;
+        float y =
+            -0.00236451049f  * Mathf.Pow(x, 4) / Mathf.Pow(10, 4)
+            + 0.06606934732f * Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
+            -0.6590661422f  * Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
+            + 2.533863636f * Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
+            -1.7391666f;
+        return y;
     }
 
     // Calculate forces using Excel calculated polynomial trend
@@ -72,11 +72,11 @@ public class WikiDefaultYachtPhysics : IYachtPhysics {
     // coefficient: 0.15, 0.174, 0.22, 0.3, 0.4, 0.55, 0.7, 0.94, 1.28, 1.6
     // Polynome: 1.16861E-06*X3 + 1.35431E-05*X2 + 0.001794328*X + 0.127066667
     float calcDragCoeficient4(float x) {
-        double y =
-            + 0.001168609 * (double) Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
-            + 0.013543124 * (double) Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
-            + 0.017943279 * (double) Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
-            + 0.127066667;
-        return (float)y;
+        float y =
+            + 0.001168609f * Mathf.Pow(x, 3) / Mathf.Pow(10, 3)
+            + 0.013543124f * Mathf.Pow(x, 2) / Mathf.Pow(10, 2)
+            + 0.017943279f * Mathf.Pow(x, 1) / Mathf.Pow(10, 1)
+            + 0.127066667f;
+        return y;
     }
 }
