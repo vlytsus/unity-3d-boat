@@ -33,7 +33,7 @@ public class BoatForces : MonoBehaviour
     float underwaterVolume; //also known as Displacement
     float shipLenght; // Water Line Length
     
-    const int maxSailAngle = 70;
+    const int maxSailAngle = 80;
     
     void Start() {
         underWaterMesh = underWaterObj.GetComponent<MeshFilter>().mesh;
@@ -94,7 +94,7 @@ public class BoatForces : MonoBehaviour
         addLiftForceToSail(headSail, headSailAngleToLiftCoeficient, headSailAreaM2);
         addDragForceToSail(headSail, headSailAngleToDragCoeficient, headSailAreaM2);
         addLiftForceToSail(mainSail, mainSailAngleToLiftCoeficient, mainSailAreaM2);
-        addDragForceToSail(mainSail, mainSailAngleToLiftCoeficient, mainSailAreaM2);
+        addDragForceToSail(mainSail, mainSailAngleToDragCoeficient, mainSailAreaM2);
 
         yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calcualteFrictionalForce());
         yachtRigidbody.AddForce(-yachtRigidbody.velocity.normalized * calculateResidualForce());
@@ -106,11 +106,31 @@ public class BoatForces : MonoBehaviour
 
     void rotateSail(GameObject sail, int angle) {
         HingeJoint hinge = sail.GetComponent<HingeJoint>();
+        
+        JointLimits limits = hinge.limits;
+
+        int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
+        if((angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)) ||
+           (angle >= 0 && Mathf.Abs(limits.max) < Mathf.Abs(maxSailAngle)) ){
+            if(sailAngle >= 0){
+                //limits.max -= angle+20;
+                //limits.min += angle;
+            } else{
+                //limits.max += angle;
+                //limits.min -= angle;
+            }   
+            limits.max += angle;
+            limits.min += angle;
+        }
+        hinge.limits = limits;
+        hinge.useLimits = true;
+
+        /*
         JointSpring hingeSpring = hinge.spring;
         hingeSpring.targetPosition += angle;
         if(Mathf.Abs(hingeSpring.targetPosition) < maxSailAngle){
-            hinge.spring = hingeSpring;
-        }
+            hinge.spring = hingeSpring;            
+        }*/
     }
 
     void moveWaterAreaArroundShip() {
@@ -124,6 +144,7 @@ public class BoatForces : MonoBehaviour
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
         float liftCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
+        Debug.Log("angle = " + apparentWindAngleGrad + " lift=" + liftCoeficient);
         float windVelocity = apparentWind.magnitude;
 
         Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
@@ -132,6 +153,8 @@ public class BoatForces : MonoBehaviour
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();       
         sailRb.AddForce(liftForce);
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
+        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind, Color.yellow, 0.0f, false);
+        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, sailVector, Color.yellow, 0.0f, false);
     }
 
     void addDragForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {  
@@ -142,13 +165,14 @@ public class BoatForces : MonoBehaviour
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
         float dragCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
+        Debug.Log("angle = " + apparentWindAngleGrad + " drag=" + dragCoeficient);
         float windVelocity = apparentWind.magnitude;
         
         Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
 
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();
         sailRb.AddForce(dragForce);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
+        Debug.DrawRay(sail.transform.position /*+ sailRb.centerOfMass*/, dragForce / 10, Color.red, 0.0f, false);
     }
 
     Vector3 calculateLiftDirection(Vector3 apparentWind, Vector3 sailVector){
@@ -158,7 +182,7 @@ public class BoatForces : MonoBehaviour
         } else {
             liftAngle = 90 * Mathf.Sign(liftAngle);
         }
-        Debug.Log("liftAngle = " + liftAngle);        
+        //Debug.Log("liftAngle = " + liftAngle);
         Vector3 liftForceDirection = Quaternion.AngleAxis(liftAngle, Vector3.up) * apparentWind.normalized;
         return liftForceDirection;
     }
@@ -228,7 +252,7 @@ public class BoatForces : MonoBehaviour
     float CalculateSurfaceArea(Mesh mesh) {
         var triangles = mesh.triangles;
         var vertices = mesh.vertices;
-        double sum = 0.0;
+        float sum = 0.0f;
         for(int i = 0; i < triangles.Length; i += 3) {
             Vector3 corner = vertices[triangles[i]];
             Vector3 a = vertices[triangles[i + 1]] - corner;
@@ -236,6 +260,6 @@ public class BoatForces : MonoBehaviour
 
             sum += Vector3.Cross(a, b).magnitude;
         }
-        return (float)(sum/2.0);
+        return sum/2.0f;
     }
 }

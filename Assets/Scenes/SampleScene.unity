@@ -940,9 +940,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683053550}
   serializedVersion: 2
-  m_Mass: 2200
+  m_Mass: 2300
   m_Drag: 0
-  m_AngularDrag: 11
+  m_AngularDrag: 10
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1089,7 +1089,7 @@ GameObject:
   - component: {fileID: 718557869}
   - component: {fileID: 718557867}
   m_Layer: 0
-  m_Name: WikiDefaultYachtPhysics
+  m_Name: YachtPhysics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1104,7 +1104,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 718557866}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bbae85542642064e9378946601500ba, type: 3}
+  m_Script: {fileID: 11500000, guid: aabb3f4cf019ae14f95d37770a7bde34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &718557869
@@ -1225,7 +1225,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 761715428}
   serializedVersion: 2
-  m_Mass: 200
+  m_Mass: 300
   m_Drag: 0
   m_AngularDrag: 10
   m_UseGravity: 1
@@ -7059,6 +7059,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: -7511558181221131132, guid: c26004c5036de024c90037e2a75d7422,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_Name
@@ -12016,8 +12021,8 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1298731831}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &1507144698
-MeshCollider:
+--- !u!65 &1507144698
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -12026,10 +12031,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4230220651333912565, guid: c26004c5036de024c90037e2a75d7422, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.001, y: 2.67, z: 1.37}
+  m_Center: {x: 0, y: 1.24, z: 0.53}
 --- !u!54 &1507144699
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12060,8 +12064,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: -0.00000024586916, y: 6.547906, z: 6.4312882}
   m_UseSpring: 1
   m_Spring:
-    spring: 100000
-    damper: 10000
+    spring: 5
+    damper: 100
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -12070,8 +12074,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 1
   m_Limits:
-    min: -60
-    max: 60
+    min: -40
+    max: 40
     bounciness: 0
     bounceMinVelocity: 0
     contactDistance: 0
@@ -12217,8 +12221,8 @@ HingeJoint:
   m_ConnectedAnchor: {x: -0.1, y: 9.84071, z: 2.2656238}
   m_UseSpring: 1
   m_Spring:
-    spring: 100000
-    damper: 10000
+    spring: 10
+    damper: 100
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -12227,8 +12231,8 @@ HingeJoint:
     freeSpin: 0
   m_UseLimits: 1
   m_Limits:
-    min: -60
-    max: 60
+    min: -30
+    max: 30
     bounciness: 0
     bounceMinVelocity: 0
     contactDistance: 0
@@ -12238,8 +12242,8 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
---- !u!64 &1529088280
-MeshCollider:
+--- !u!65 &1529088280
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -12248,10 +12252,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4770228838484407568, guid: 94b85c17c37283a4eaef6924dd656c27, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.01, y: 2.02, z: 2.21}
+  m_Center: {x: -0.014287503, y: 0.95, z: 1.18}
 --- !u!1 &1531585283
 GameObject:
   m_ObjectHideFlags: 0
