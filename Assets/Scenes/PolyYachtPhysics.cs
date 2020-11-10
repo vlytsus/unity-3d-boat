@@ -5,7 +5,7 @@ using UnityEngine;
 public class PolyYachtPhysics : IYachtPhysics {
 
     const float mainSailAreaM2 = 20.0f; // Width * Height / 2
-    const float headSailAreaM2 = 15.0f; // Width * Height / 2
+    const float headSailAreaM2 = 16.0f; // Width * Height / 2
     const float underwaterSurface = 18.5f; //also known as Wetted surface
     const float underwaterVolume = 3.3f; //also known as Displacement
     const float shipLenght = 8.3f; // Water Line Length

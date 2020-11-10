@@ -110,17 +110,12 @@ public class BoatForces : MonoBehaviour
         JointLimits limits = hinge.limits;
 
         int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
-        if((angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)) ||
-           (angle >= 0 && Mathf.Abs(limits.max) < Mathf.Abs(maxSailAngle)) ){
-            if(sailAngle >= 0){
-                //limits.max -= angle+20;
-                //limits.min += angle;
-            } else{
-                //limits.max += angle;
-                //limits.min -= angle;
-            }   
-            limits.max += angle;
+        if(angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)){
             limits.min += angle;
+            limits.max = limits.min + 30;
+        } else if (angle >= 0 && Mathf.Abs(limits.max) < Mathf.Abs(maxSailAngle)) {
+            limits.max += angle;
+            limits.min = limits.max - 30;
         }
         hinge.limits = limits;
         hinge.useLimits = true;
@@ -172,12 +167,12 @@ public class BoatForces : MonoBehaviour
 
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();
         sailRb.AddForce(dragForce);
-        Debug.DrawRay(sail.transform.position /*+ sailRb.centerOfMass*/, dragForce / 10, Color.red, 0.0f, false);
+        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
     }
 
     Vector3 calculateLiftDirection(Vector3 apparentWind, Vector3 sailVector){
         float liftAngle = Vector3.SignedAngle(-apparentWind.normalized, sailVector.normalized, Vector3.up);
-        if(Mathf.Abs(liftAngle) < 90){
+        if(Mathf.Abs(liftAngle) < 180){
             liftAngle = -90 * Mathf.Sign(liftAngle);
         } else {
             liftAngle = 90 * Mathf.Sign(liftAngle);
