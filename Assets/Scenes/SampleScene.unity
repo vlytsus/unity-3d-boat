@@ -7032,17 +7032,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000024215
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4174314
+      value: 2.24
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.9898
+      value: 2.98
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
@@ -7087,12 +7087,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: -70.084496
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.65
+      value: 2.796015
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
@@ -7107,14 +7107,15 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_Name
       value: HeadSail
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -7511558181221131132, guid: c26004c5036de024c90037e2a75d7422, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c26004c5036de024c90037e2a75d7422, type: 3}
 --- !u!1 &1305663194
 GameObject:
@@ -12066,6 +12067,80 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1298731831}
   m_PrefabAsset: {fileID: 0}
+--- !u!183 &1507144696
+Cloth:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507144694}
+  m_Enabled: 1
+  m_StretchingStiffness: 1
+  m_BendingStiffness: 0
+  m_UseTethers: 1
+  m_UseGravity: 1
+  m_Damping: 0
+  m_ExternalAcceleration: {x: 0, y: 0, z: 0}
+  m_RandomAcceleration: {x: 0, y: 0, z: 0}
+  m_WorldVelocityScale: 0.5
+  m_WorldAccelerationScale: 1
+  m_Friction: 0.5
+  m_CollisionMassScale: 0
+  m_UseContinuousCollision: 1
+  m_UseVirtualParticles: 1
+  m_SolverFrequency: 120
+  m_SleepThreshold: 0.1
+  m_Coefficients:
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
+    collisionSphereDistance: 3.4028235e+38
+  m_CapsuleColliders: []
+  m_SphereColliders: []
+  m_SelfCollisionDistance: 0
+  m_SelfCollisionStiffness: 0.2
+  m_SelfAndInterCollisionIndices: 
+  m_VirtualParticleWeights:
+  - {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+  - {x: 0.6666667, y: 0.16666667, z: 0.16666667}
+  - {x: 0.5, y: 0.5, z: 0}
+  m_VirtualParticleIndices: 
 --- !u!65 &1507144698
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12106,7 +12181,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 1.6, z: 1.66}
   m_Axis: {x: 0, y: 1, z: -0.35}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000024586916, y: 6.547906, z: 6.4312882}
+  m_ConnectedAnchor: {x: 0, y: 6.6039753, z: 6.4290714}
   m_UseSpring: 1
   m_Spring:
     spring: 5
@@ -12130,6 +12205,57 @@ HingeJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!137 &1507144701
+SkinnedMeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507144694}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  serializedVersion: 2
+  m_Quality: 0
+  m_UpdateWhenOffscreen: 0
+  m_SkinnedMotionVectors: 1
+  m_Mesh: {fileID: -4770228838484407568, guid: 94b85c17c37283a4eaef6924dd656c27, type: 3}
+  m_Bones: []
+  m_BlendShapeWeights: []
+  m_RootBone: {fileID: 0}
+  m_AABB:
+    m_Center: {x: -0.00714375, y: 3.4096785, z: 1.1973191}
+    m_Extent: {x: 0, y: 3.4096785, z: 1.1878353}
+  m_DirtyAABB: 0
 --- !u!1001 &1529088275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12330,11 +12456,11 @@ Cloth:
   m_SolverFrequency: 120
   m_SleepThreshold: 0.1
   m_Coefficients:
-  - maxDistance: 1
+  - maxDistance: 1.2
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
+  - maxDistance: 1.2
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
@@ -12350,11 +12476,9 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
+  - maxDistance: 0.9
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
+  - maxDistance: 0.8
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
@@ -12364,7 +12488,9 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
+  - maxDistance: 0.1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.1
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
