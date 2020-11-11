@@ -12330,21 +12330,17 @@ Cloth:
   m_SolverFrequency: 120
   m_SleepThreshold: 0.1
   m_Coefficients:
-  - maxDistance: 1
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.8
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1.2
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.2
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
+  - maxDistance: 0.2
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
@@ -12354,21 +12350,7 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 0
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
-    collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
+  - maxDistance: 0.8
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 1
     collisionSphereDistance: 3.4028235e+38
@@ -12384,9 +12366,17 @@ Cloth:
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 1
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0.8
+    collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
-  - maxDistance: 1
+  - maxDistance: 0.8
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
+    collisionSphereDistance: 3.4028235e+38
+  - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
   - maxDistance: 0
     collisionSphereDistance: 3.4028235e+38
