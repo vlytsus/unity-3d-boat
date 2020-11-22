@@ -12,6 +12,7 @@ public class BoatForces : MonoBehaviour
     public GameObject windObj;
     public GameObject headSail;
     public GameObject mainSail;
+    public HudMenu hudMenu;
 
     private Mesh underWaterMesh;
 
@@ -139,7 +140,7 @@ public class BoatForces : MonoBehaviour
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
         float liftCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
-        Debug.Log("angle = " + apparentWindAngleGrad + " lift=" + liftCoeficient);
+        //Debug.Log("angle = " + apparentWindAngleGrad + " lift=" + liftCoeficient);
         float windVelocity = apparentWind.magnitude;
 
         Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
@@ -156,11 +157,12 @@ public class BoatForces : MonoBehaviour
         
         Vector3 trueWind = windObj.transform.forward * windSpeed;
         Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
+        hudMenu.onAwaAngleChange(apparentWind);
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
         float dragCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
-        Debug.Log("angle = " + apparentWindAngleGrad + " drag=" + dragCoeficient);
+        //Debug.Log("angle = " + apparentWindAngleGrad + " drag=" + dragCoeficient);
         float windVelocity = apparentWind.magnitude;
         
         Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
