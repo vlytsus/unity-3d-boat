@@ -7,6 +7,9 @@ public class HudMenu : MonoBehaviour
 {
     public GameObject boat;
     public Text status;
+    public RectTransform directionIndicator;
+    public RectTransform yachtDirection;
+    private Vector3 indDirection;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,5 +21,7 @@ public class HudMenu : MonoBehaviour
     {
         Rigidbody bootRb = boat.GetComponent<Rigidbody>();
         status.text = "Speed: " + System.Math.Round(bootRb.velocity.magnitude, 2);
+        indDirection.z = boat.transform.eulerAngles.y;
+        directionIndicator.localEulerAngles = indDirection;
     }
 }
