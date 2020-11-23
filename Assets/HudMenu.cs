@@ -10,6 +10,7 @@ public class HudMenu : MonoBehaviour
     public Text status;
     public RectTransform twaIndicator;
     public RectTransform awaIndicator;
+    public RectTransform dirIndicator;
 
     protected Vector3 awaVector;
     protected Vector3 headSailVector;
@@ -21,17 +22,23 @@ public class HudMenu : MonoBehaviour
     {
         Rigidbody bootRb = boat.GetComponent<Rigidbody>();
         status.text = "Speed: " + System.Math.Round(bootRb.velocity.magnitude, 2);
+
+        
         
         Vector3 indDirection = new Vector3();
         indDirection.z = boat.transform.eulerAngles.y - wind.transform.eulerAngles.y;
         twaIndicator.localEulerAngles = indDirection;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(boat.transform.forward, -awaVector);
+        int directionAngle = (int)Vector3.Angle(boat.transform.forward, bootRb.velocity);
+        
         if(indDirection.z < 180){
             apparentWindAngleGrad = 180 - apparentWindAngleGrad;
         } else {
             apparentWindAngleGrad = 180 + apparentWindAngleGrad;
+            directionAngle = 360 - directionAngle;
         }
+        dirIndicator.eulerAngles = new Vector3(0, 0, directionAngle);
         awaIndicator.eulerAngles = new Vector3(0, 0, apparentWindAngleGrad);
     }
 
