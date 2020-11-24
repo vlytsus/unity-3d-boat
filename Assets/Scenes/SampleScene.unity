@@ -7398,7 +7398,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.7
+      value: 2.63
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
@@ -7448,12 +7448,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.9388914
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.2157545
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: c26004c5036de024c90037e2a75d7422,
         type: 3}
@@ -12537,7 +12537,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 1.6, z: 1.66}
   m_Axis: {x: 0, y: 1, z: -0.35}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.0000000037252903, y: 6.280365, z: 6.5288367}
+  m_ConnectedAnchor: {x: 0, y: 6.3735485, z: 6.6017847}
   m_UseSpring: 1
   m_Spring:
     spring: 5
@@ -12609,8 +12609,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: -0.0071437475, y: 3.5839128, z: 1.332257}
-    m_Extent: {x: 0.0000000023283064, y: 3.5839128, z: 1.3217044}
+    m_Center: {x: -0.00714375, y: 3.6584334, z: 1.3829108}
+    m_Extent: {x: 0, y: 3.6584334, z: 1.3719572}
   m_DirtyAABB: 0
 --- !u!1001 &1529088275
 PrefabInstance:
@@ -12627,12 +12627,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.1335
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.7884
+      value: -2.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
@@ -12677,17 +12677,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.07032
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.6509194
+      value: 3.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.171515
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 94b85c17c37283a4eaef6924dd656c27,
         type: 3}
@@ -12751,7 +12751,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: 2, z: 2.4}
   m_Axis: {x: 0, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.099999994, y: 9.541116, z: 2.2717612}
+  m_ConnectedAnchor: {x: -0.099999994, y: 10.40708, z: 2.2182517}
   m_UseSpring: 1
   m_Spring:
     spring: 10
@@ -12910,8 +12910,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: -0.021933597, y: 4.4522157, z: 1.3056574}
-    m_Extent: {x: 0, y: 4.4522157, z: 1.2953155}
+    m_Center: {x: -0.00714375, y: 4.755964, z: 1.3227842}
+    m_Extent: {x: 0, y: 4.755964, z: 1.3123066}
   m_DirtyAABB: 0
 --- !u!1 &1531585283
 GameObject:
