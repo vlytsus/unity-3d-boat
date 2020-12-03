@@ -130,7 +130,9 @@ public class BoatForces : MonoBehaviour
     }
 
     void moveWaterAreaArroundShip() {
-        waterArround.transform.position = new Vector3(transform.position.x + 12, waterArround.transform.position.y, transform.position.z + 12);
+        if(waterArround != null) {
+            waterArround.transform.position = new Vector3(transform.position.x + 12, waterArround.transform.position.y, transform.position.z + 12);
+        }
     }
 
     void addLiftForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {           
