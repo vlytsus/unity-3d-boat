@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoatForces : MonoBehaviour
+public class BoatForces : IYachtControls
 {
     public Rigidbody yachtRigidbody;
     public Rigidbody keelRigidbody;
@@ -55,7 +55,24 @@ public class BoatForces : MonoBehaviour
         shipLenght = yachtPhysics.getShipLenght();
     }
 
+    public override void rotateHeadSail(int angle){
+        rotateSail(headSail, angle);
+    }
+
+    public override void rotateMainSail(int angle){
+        rotateSail(mainSail, angle);
+    }
+
+    public override void rotateRudder(int angle){
+                if(angle > 0){
+            yachtRigidbody.AddForceAtPosition(transform.right * 1000 * yachtRigidbody.velocity.magnitude, rudder.transform.position, ForceMode.Force);
+        } else if (angle < 0) {
+            yachtRigidbody.AddForceAtPosition(transform.right * -1000 * yachtRigidbody.velocity.magnitude, rudder.transform.position, ForceMode.Force);
+        }
+    }
+
     void Update() {
+        /*
         if (Input.GetKey(KeyCode.A)){
             yachtRigidbody.AddForceAtPosition(transform.right * 3000, rudder.transform.position, ForceMode.Force);
         }
@@ -78,15 +95,16 @@ public class BoatForces : MonoBehaviour
 
         if (Input.GetKey(KeyCode.C)) {
             rotateSail(mainSail, -1);
-        }
+        } 
 
+        
         if (Input.GetKey(KeyCode.W)) {
             yachtRigidbody.AddForce(transform.forward * 10000);
         } 
         
         if (Input.GetKey(KeyCode.S)) {
             yachtRigidbody.AddForce(transform.forward * -10000);
-        }
+        } */
 
         moveWaterAreaArroundShip();    
     }

@@ -7047,6 +7047,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   yachtPrefab: {fileID: 683053551}
   windObj: {fileID: 952299484}
+  yachtControls: {fileID: 683053551}
 --- !u!4 &1649695316
 Transform:
   m_ObjectHideFlags: 0
