@@ -25,24 +25,13 @@ public class YachtsManager : MonoBehaviour
         secondYacht.windObj = windObj;
     }
 
-    void followTarget(){
-        float distance = Vector3.Distance (target[waypoint].transform.position, yachtPrefab.transform.position);
-        if(distance < 5 ){
-            if(waypoint < target.Length-1){
-                waypoint++;
-            } else {
-               waypoint = 0;
-            }
-        }
-        Vector3 targetDir = target[waypoint].transform.position - yachtPrefab.transform.position;
-        float angle = Vector3.SignedAngle(targetDir, yachtPrefab.transform.forward, Vector3.up);
-
+    void followTarget(){        
+        float angle = calcAngleToWaypoint();
         if(angle > 10){
             yachtControls.rotateRudder(1);
         } else if(angle < -10){
             yachtControls.rotateRudder(-1);
-        }
-        Debug.Log("angle = " + angle);
+        }        
     }
 
     void Update() {
@@ -72,5 +61,23 @@ public class YachtsManager : MonoBehaviour
         if (Input.GetKey(KeyCode.C)) {
             yachtControls.rotateMainSail(-1);
         }
+    }
+
+    private int calcAngleToWaypoint() { 
+        Vector3 targetDir = targetDirection();
+        int angle = (int)Vector3.SignedAngle(targetDir, yachtPrefab.transform.forward, Vector3.up);
+        //Debug.Log("angle = " + angle);
+        return angle;
+    }
+    private Vector3 targetDirection() {
+        float distance = Vector3.Distance (target[waypoint].transform.position, yachtPrefab.transform.position);
+        if(distance < 5 ){
+            if(waypoint < target.Length-1){
+                waypoint++;
+            } else {
+               waypoint = 0;
+            }
+        }
+        return target[waypoint].transform.position - yachtPrefab.transform.position;
     }
 }
