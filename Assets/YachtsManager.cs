@@ -12,7 +12,9 @@ public class YachtsManager : MonoBehaviour
 
     public BoatForces anotherYacht;
     public GameObject mainYacht;
-    public GameObject target;
+    public GameObject[] target;
+
+    private int waypoint = 0;
     
 
     void Start() {
@@ -21,12 +23,18 @@ public class YachtsManager : MonoBehaviour
         secondYacht.tag = "SecondYacht";
         GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().enabled = true;
         secondYacht.windObj = windObj;
-        yachtPrefab.waterArround = waterArround;
     }
 
     void followTarget(){
-        //target.transform
-        Vector3 targetDir = target.transform.position - yachtPrefab.transform.position;
+        float distance = Vector3.Distance (target[waypoint].transform.position, yachtPrefab.transform.position);
+        if(distance < 5 ){
+            if(waypoint < target.Length-1){
+                waypoint++;
+            } else {
+               waypoint = 0;
+            }
+        }
+        Vector3 targetDir = target[waypoint].transform.position - yachtPrefab.transform.position;
         float angle = Vector3.SignedAngle(targetDir, yachtPrefab.transform.forward, Vector3.up);
 
         if(angle > 10){
