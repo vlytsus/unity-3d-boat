@@ -72,40 +72,6 @@ public class BoatForces : IYachtControls
     }
 
     void Update() {
-        /*
-        if (Input.GetKey(KeyCode.A)){
-            yachtRigidbody.AddForceAtPosition(transform.right * 3000, rudder.transform.position, ForceMode.Force);
-        }
-
-        if (Input.GetKey(KeyCode.D)) {
-            yachtRigidbody.AddForceAtPosition(-transform.right * 3000, rudder.transform.position, ForceMode.Force);
-        }
-
-        if (Input.GetKey(KeyCode.Q)) {
-            rotateSail(headSail, 1);
-        }
-
-        if (Input.GetKey(KeyCode.E)) {
-            rotateSail(headSail, -1);
-        }
-
-        if (Input.GetKey(KeyCode.Z)) {
-            rotateSail(mainSail, 1);
-        }
-
-        if (Input.GetKey(KeyCode.C)) {
-            rotateSail(mainSail, -1);
-        } 
-
-        
-        if (Input.GetKey(KeyCode.W)) {
-            yachtRigidbody.AddForce(transform.forward * 10000);
-        } 
-        
-        if (Input.GetKey(KeyCode.S)) {
-            yachtRigidbody.AddForce(transform.forward * -10000);
-        } */
-
         moveWaterAreaArroundShip();    
     }
 
