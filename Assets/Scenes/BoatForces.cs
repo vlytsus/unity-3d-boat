@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,11 +64,22 @@ public class BoatForces : IYachtControls
     }
 
     public override void rotateRudder(int angle){
-                if(angle > 0){
+        if(angle > 0){
             yachtRigidbody.AddForceAtPosition(transform.right * 1000 * yachtRigidbody.velocity.magnitude, rudder.transform.position, ForceMode.Force);
         } else if (angle < 0) {
             yachtRigidbody.AddForceAtPosition(transform.right * -1000 * yachtRigidbody.velocity.magnitude, rudder.transform.position, ForceMode.Force);
         }
+    }
+
+    public override Vector3 getApparentWindVector() {
+
+        Vector3 windSpeedVector = windObj.transform.forward * windSpeed;
+        Vector3 boatSpeedVector = yachtRigidbody.velocity;
+
+        // Since Face wind vector is caused by yacht movement it 
+        // has the yacht velocity magnitude but opposite direction.
+        // So we will just subtract one vector from another
+        return windSpeedVector - boatSpeedVector;
     }
 
     void Update() {
@@ -94,7 +105,6 @@ public class BoatForces : IYachtControls
         
         JointLimits limits = hinge.limits;
 
-        int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
         if(angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)){
             limits.min += angle;
             limits.max = limits.min + 30;
@@ -119,9 +129,9 @@ public class BoatForces : IYachtControls
         }
     }
 
-    void addLiftForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {           
-        Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
+    void addLiftForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {
+
+        Vector3 apparentWind = getApparentWindVector();
         Vector3 sailVector = sail.transform.forward;
 
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
@@ -141,8 +151,7 @@ public class BoatForces : IYachtControls
 
     void addDragForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {  
         
-        Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = calculateApparentWindVector(trueWind, yachtRigidbody.velocity);
+        Vector3 apparentWind = getApparentWindVector();
         hudMenu.onAwaAngleChange(apparentWind);
         Vector3 sailVector = sail.transform.forward;
 
@@ -168,13 +177,6 @@ public class BoatForces : IYachtControls
         //Debug.Log("liftAngle = " + liftAngle);
         Vector3 liftForceDirection = Quaternion.AngleAxis(liftAngle, Vector3.up) * apparentWind.normalized;
         return liftForceDirection;
-    }
-
-    Vector3 calculateApparentWindVector(Vector3 windSpeedVector, Vector3 boatSpeedVector) {
-        // Since Face wind vector is caused by yacht movement it 
-        // has the yacht velocity magnitude but opposite direction.
-        // So we will just subtract one vector from another
-        return windSpeedVector - boatSpeedVector;
     }
 
     //Keel force is opposite to boat side drag force caused by wind, but keel force is not the same as hull force
