@@ -75,7 +75,7 @@ public class BoatForces : IYachtControls
         }
     }
 
-    public override Vector3 getApparentWindVector() {
+    Vector3 getApparentWindVector() {
 
         Vector3 windSpeedVector = windObj.transform.forward * windSpeed;
         Vector3 boatSpeedVector = getVelocity();
@@ -86,11 +86,19 @@ public class BoatForces : IYachtControls
         return windSpeedVector - boatSpeedVector;
     }
 
+    int getSailApparentAngleGrad(GameObject sail){
+        Vector3 apparentWind = getApparentWindVector();
+        Vector3 sailVector = sail.transform.forward;
+        int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
+        return apparentWindAngleGrad;
+    }
+
     void FixedUpdate() {
-        addLiftForceToSail(headSail, headSailAngleToLiftCoeficient, headSailAreaM2);
-        addDragForceToSail(headSail, headSailAngleToDragCoeficient, headSailAreaM2);
-        addLiftForceToSail(mainSail, mainSailAngleToLiftCoeficient, mainSailAreaM2);
-        addDragForceToSail(mainSail, mainSailAngleToDragCoeficient, mainSailAreaM2);
+        Vector3 apparentWind = getApparentWindVector();
+        hudMenu.onAwaAngleChange(apparentWind);
+
+        addSailForce(headSail, apparentWind, headSailAreaM2);
+        addSailForce(mainSail, apparentWind, mainSailAreaM2);
 
         yachtRigidbody.AddForce(-getVelocity().normalized * calcualteFrictionalForce());
         yachtRigidbody.AddForce(-getVelocity().normalized * calculateResidualForce());
@@ -124,42 +132,24 @@ public class BoatForces : IYachtControls
         }*/
     }
 
-    void addLiftForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {           
+    void addSailForce(GameObject sail, Vector3 apparentWind, float sailAreaM2) {           
         Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = getApparentWindVector();
         Vector3 sailVector = sail.transform.forward;
-
-        int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
-        float liftCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
-        //Debug.Log("angle = " + apparentWindAngleGrad + " lift=" + liftCoeficient);
         float windVelocity = apparentWind.magnitude;
+        float liftCoeficient = getHeadSailLiftCoeficientAtAngle(getSailApparentAngleGrad(sail));
+        float dragCoeficient = getHeadSailDragCoeficientAtAngle(getSailApparentAngleGrad(sail));
 
         Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
         Vector3 liftForce = liftForceDirection * calculateSailForce(liftCoeficient, windVelocity, sailAreaM2);
+        Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
+
         
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();       
         sailRb.AddForce(liftForce);
+        sailRb.AddForce(dragForce);
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind, Color.yellow, 0.0f, false);
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, sailVector, Color.yellow, 0.0f, false);
-    }
-
-    void addDragForceToSail(GameObject sail, float[] angleToCoeficient, float sailAreaM2) {  
-        
-        Vector3 trueWind = windObj.transform.forward * windSpeed;
-        Vector3 apparentWind = getApparentWindVector();
-        hudMenu.onAwaAngleChange(apparentWind);
-        Vector3 sailVector = sail.transform.forward;
-
-        int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
-        float dragCoeficient = getCoeficientAtAngle(angleToCoeficient, apparentWindAngleGrad);
-        //Debug.Log("angle = " + apparentWindAngleGrad + " drag=" + dragCoeficient);
-        float windVelocity = apparentWind.magnitude;
-        
-        Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
-
-        Rigidbody sailRb = sail.GetComponent<Rigidbody>();
-        sailRb.AddForce(dragForce);
         Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
     }
 
@@ -228,6 +218,19 @@ public class BoatForces : IYachtControls
             coeficient = angleToCoeficient[angle];
         } 
         return coeficient;
+    }
+
+    public override float getHeadSailLiftCoeficientAtAngle(int angle){
+        return getCoeficientAtAngle(headSailAngleToLiftCoeficient, angle);
+    }
+    public override float getMainSailLiftCoeficientAtAngle(int angle){
+        return getCoeficientAtAngle(mainSailAngleToLiftCoeficient, angle);
+    }
+    public override float getHeadSailDragCoeficientAtAngle(int angle){
+        return getCoeficientAtAngle(headSailAngleToDragCoeficient, angle);
+    }
+    public override float getMainSailDragCoeficientAtAngle(int angle){
+        return getCoeficientAtAngle(mainSailAngleToDragCoeficient, angle);
     }
 
     float CalculateSurfaceArea(Mesh mesh) {
