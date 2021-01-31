@@ -86,8 +86,7 @@ public class BoatForces : IYachtControls
         return windSpeedVector - boatSpeedVector;
     }
 
-    int getSailApparentAngleGrad(GameObject sail){
-        Vector3 apparentWind = getApparentWindVector();
+    int getSailApparentAngleGrad(GameObject sail, Vector3 apparentWind){
         Vector3 sailVector = sail.transform.forward;
         int apparentWindAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
         return apparentWindAngleGrad;
@@ -136,8 +135,9 @@ public class BoatForces : IYachtControls
         Vector3 trueWind = windObj.transform.forward * windSpeed;
         Vector3 sailVector = sail.transform.forward;
         float windVelocity = apparentWind.magnitude;
-        float liftCoeficient = getHeadSailLiftCoeficientAtAngle(getSailApparentAngleGrad(sail));
-        float dragCoeficient = getHeadSailDragCoeficientAtAngle(getSailApparentAngleGrad(sail));
+        int sailAppraentAngleGrad = getSailApparentAngleGrad(sail, apparentWind);
+        float liftCoeficient = getHeadSailLiftCoeficientAtAngle(sailAppraentAngleGrad);
+        float dragCoeficient = getHeadSailDragCoeficientAtAngle(sailAppraentAngleGrad);
 
         Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
         Vector3 liftForce = liftForceDirection * calculateSailForce(liftCoeficient, windVelocity, sailAreaM2);
