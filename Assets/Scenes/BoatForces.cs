@@ -96,7 +96,10 @@ public class BoatForces : IYachtControls
         Vector3 apparentWind = getApparentWindVector();
         hudMenu.onAwaAngleChange(apparentWind);
 
-        //addSailForce(headSail, apparentWind, headSailAreaM2);
+        rotateToOptimalSailAngle(headSail, apparentWind, headSailAreaM2);
+        rotateToOptimalSailAngle(mainSail, apparentWind, mainSailAreaM2);
+
+        addSailForce(headSail, apparentWind, headSailAreaM2);
         addSailForce(mainSail, apparentWind, mainSailAreaM2);
 
         yachtRigidbody.AddForce(-getVelocity().normalized * calcualteFrictionalForce());
@@ -108,18 +111,36 @@ public class BoatForces : IYachtControls
     }
 
     void rotateSail(GameObject sail, int angle) {
-        HingeJoint hinge = sail.GetComponent<HingeJoint>();
-        
-        JointLimits limits = hinge.limits;
+        int minLimit = getSailJointMinLimit(sail);
+        int maxLimit = getSailJointMaxLimit(sail);
 
-        //int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
-        if(angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)){
-            limits.min += angle;
-            limits.max = limits.min + 30;
-        } else if (angle >= 0 && Mathf.Abs(limits.max) < Mathf.Abs(maxSailAngle)) {
-            limits.max += angle;
-            limits.min = limits.max - 30;
+        if(angle < 0 && Mathf.Abs(minLimit) < Mathf.Abs(maxSailAngle)){
+            minLimit += angle;
+            maxLimit = minLimit + 30;
+        } else if (angle >= 0 && Mathf.Abs(maxLimit) < Mathf.Abs(maxSailAngle)) {
+            maxLimit += angle;
+            minLimit = maxLimit - 30;
         }
+        setSailJointLimits(sail, minLimit, maxLimit);
+    }
+
+    int getSailJointMaxLimit(GameObject sail) {
+        return (int)sail.GetComponent<HingeJoint>().limits.max;
+    }
+
+    int getSailJointMinLimit(GameObject sail) {
+        return (int)sail.GetComponent<HingeJoint>().limits.min;
+    }
+
+    void setSailJointLimits(GameObject sail, int angle) {
+        setSailJointLimits(sail, angle-0.1f, angle+0.1f);
+    }
+
+    void setSailJointLimits(GameObject sail, float minAngle, float maxAngle) {
+        HingeJoint hinge = sail.GetComponent<HingeJoint>();        
+        JointLimits limits = hinge.limits;
+        limits.max = maxAngle;
+        limits.min = minAngle;
         hinge.limits = limits;
         hinge.useLimits = true;
     }
@@ -127,7 +148,6 @@ public class BoatForces : IYachtControls
     void addSailForce(GameObject sail, Vector3 apparentWind, float sailAreaM2) {
         Vector3 sailVector = sail.transform.forward;
         float windVelocity = apparentWind.magnitude;
-        int bestAngle = getBestSailForceAngle(sail, apparentWind, sailAreaM2);
         
         int sailAppraentAngleGrad = getSailApparentAngleGrad(sail, apparentWind);
         float liftCoeficient = getHeadSailLiftCoeficientAtAngle(sailAppraentAngleGrad);
@@ -145,7 +165,7 @@ public class BoatForces : IYachtControls
         //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
     }
 
-    int getBestSailForceAngle(GameObject sail, Vector3 apparentWind, float sailAreaM2){
+    void rotateToOptimalSailAngle(GameObject sail, Vector3 apparentWind, float sailAreaM2){
         float maxProjection = 0;
         float currentProjection = 0;
         int resultAngle = 0;
@@ -169,21 +189,11 @@ public class BoatForces : IYachtControls
                 maxProjection = resultMagnitude;
                 resultAngle = i;
                 resultApa = sailAppraentAngleGrad;
-            }
-
-            if(sailAngleGrad == i){
-                currentProjection = Vector3.Dot(resultForce, transform.forward);
-            }             
+            }           
         }
-                  
-        HingeJoint hinge = sail.GetComponent<HingeJoint>();        
-        JointLimits limits = hinge.limits;
-        limits.max = resultAngle+1;
-        limits.min = resultAngle-1;
-        hinge.limits = limits;
-        hinge.useLimits = true;
-        Debug.Log ("resultAngle=" +resultAngle+ " sailAngleGrad=" + sailAngleGrad + " maxProjection=" + maxProjection + " currentProjection=" + currentProjection);
-        return resultAngle;
+
+        setSailJointLimits(sail, resultAngle);
+        Debug.Log ("resultAngle=" +resultAngle+ " sailAngleGrad=" + sailAngleGrad + " maxProjection=" + maxProjection);
     }
 
     Vector3 calculateLiftDirection(Vector3 apparentWind, Vector3 sailVector){
