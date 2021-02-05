@@ -96,7 +96,7 @@ public class BoatForces : IYachtControls
         Vector3 apparentWind = getApparentWindVector();
         hudMenu.onAwaAngleChange(apparentWind);
 
-        addSailForce(headSail, apparentWind, headSailAreaM2);
+        //addSailForce(headSail, apparentWind, headSailAreaM2);
         addSailForce(mainSail, apparentWind, mainSailAreaM2);
 
         yachtRigidbody.AddForce(-getVelocity().normalized * calcualteFrictionalForce());
@@ -112,7 +112,7 @@ public class BoatForces : IYachtControls
         
         JointLimits limits = hinge.limits;
 
-        int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
+        //int sailAngle = (int)Vector3.Angle(transform.forward, sail.transform.forward);
         if(angle < 0 && Mathf.Abs(limits.min) < Mathf.Abs(maxSailAngle)){
             limits.min += angle;
             limits.max = limits.min + 30;
@@ -122,57 +122,97 @@ public class BoatForces : IYachtControls
         }
         hinge.limits = limits;
         hinge.useLimits = true;
-
-        /*
-        JointSpring hingeSpring = hinge.spring;
-        hingeSpring.targetPosition += angle;
-        if(Mathf.Abs(hingeSpring.targetPosition) < maxSailAngle){
-            hinge.spring = hingeSpring;            
-        }*/
     }
 
-    void addSailForce(GameObject sail, Vector3 apparentWind, float sailAreaM2) {           
-        Vector3 trueWind = windObj.transform.forward * windSpeed;
+    void addSailForce(GameObject sail, Vector3 apparentWind, float sailAreaM2) {
         Vector3 sailVector = sail.transform.forward;
         float windVelocity = apparentWind.magnitude;
+        int bestAngle = getBestSailForceAngle(sail, apparentWind, sailAreaM2);
+        
         int sailAppraentAngleGrad = getSailApparentAngleGrad(sail, apparentWind);
         float liftCoeficient = getHeadSailLiftCoeficientAtAngle(sailAppraentAngleGrad);
         float dragCoeficient = getHeadSailDragCoeficientAtAngle(sailAppraentAngleGrad);
-
-        Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);       
+        Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);
         Vector3 liftForce = liftForceDirection * calculateSailForce(liftCoeficient, windVelocity, sailAreaM2);
         Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
-
+        Vector3 resultForce = liftForce + dragForce;
         
         Rigidbody sailRb = sail.GetComponent<Rigidbody>();       
-        sailRb.AddForce(liftForce);
-        sailRb.AddForce(dragForce);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind, Color.yellow, 0.0f, false);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, sailVector, Color.yellow, 0.0f, false);
-        Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
+        sailRb.AddForce(resultForce);
+        //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, liftForce / 10, Color.blue, 0.0f, false);
+        //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, -apparentWind, Color.yellow, 0.0f, false);
+        //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, sailVector*10, Color.yellow, 0.0f, false);
+        //Debug.DrawRay(sail.transform.position + sailRb.centerOfMass, dragForce / 10, Color.red, 0.0f, false);
+    }
+
+    int getBestSailForceAngle(GameObject sail, Vector3 apparentWind, float sailAreaM2){
+        float maxProjection = 0;
+        float currentProjection = 0;
+        int resultAngle = 0;
+        float windVelocity = apparentWind.magnitude;
+        int sailAngleGrad = -(int)Vector3.SignedAngle(sail.transform.forward, transform.forward, Vector3.up);          
+        int resultApa = 0;
+
+        for(int i = -maxSailAngle+20; i < maxSailAngle-20; i+=3) {
+            
+            Vector3 sailVector = rotateVectorByDegree(transform.forward, i);
+            int sailAppraentAngleGrad = (int)Vector3.Angle(sailVector, -apparentWind);
+            float liftCoeficient = getHeadSailLiftCoeficientAtAngle(sailAppraentAngleGrad);
+            float dragCoeficient = getHeadSailDragCoeficientAtAngle(sailAppraentAngleGrad);            
+            Vector3 liftForceDirection = calculateLiftDirection(apparentWind, sailVector);
+            Vector3 liftForce = liftForceDirection * calculateSailForce(liftCoeficient, windVelocity, sailAreaM2);
+            Vector3 dragForce = apparentWind.normalized * calculateSailForce(dragCoeficient, windVelocity, sailAreaM2);
+            Vector3 resultForce = liftForce + dragForce;
+
+            int resultMagnitude = (int)Vector3.Dot(resultForce, transform.forward);
+            if(resultMagnitude >  maxProjection){
+                maxProjection = resultMagnitude;
+                resultAngle = i;
+                resultApa = sailAppraentAngleGrad;
+            }
+
+            if(sailAngleGrad == i){
+                currentProjection = Vector3.Dot(resultForce, transform.forward);
+            }             
+        }
+                  
+        HingeJoint hinge = sail.GetComponent<HingeJoint>();        
+        JointLimits limits = hinge.limits;
+        limits.max = resultAngle+1;
+        limits.min = resultAngle-1;
+        hinge.limits = limits;
+        hinge.useLimits = true;
+        Debug.Log ("resultAngle=" +resultAngle+ " sailAngleGrad=" + sailAngleGrad + " maxProjection=" + maxProjection + " currentProjection=" + currentProjection);
+        return resultAngle;
     }
 
     Vector3 calculateLiftDirection(Vector3 apparentWind, Vector3 sailVector){
         float liftAngle = Vector3.SignedAngle(-apparentWind.normalized, sailVector.normalized, Vector3.up);
         if(Mathf.Abs(liftAngle) < 180){
+            //Mathf.Sign(x) == 1 when x is positive or zero, -1 when x is negative.
             liftAngle = -90 * Mathf.Sign(liftAngle);
         } else {
             liftAngle = 90 * Mathf.Sign(liftAngle);
         }
-        //Debug.Log("liftAngle = " + liftAngle);
-        Vector3 liftForceDirection = Quaternion.AngleAxis(liftAngle, Vector3.up) * apparentWind.normalized;
+        //lift angle is always 90 degree to the apparent wind, but has left or right direction
+        Vector3 liftForceDirection = rotateVectorByDegree(apparentWind, liftAngle);
+        //So, we are getting liftForceDirection vector by rotating apparent wind to 90 degree left or right
         return liftForceDirection;
+    }
+
+    Vector3 rotateVectorByDegree(Vector3 origVector, float degree) {
+        Vector3 rotatedVector = Quaternion.AngleAxis(degree, Vector3.up) * origVector.normalized;
+        return rotatedVector;
     }
 
     //Keel force is opposite to boat side drag force caused by wind, but keel force is not the same as hull force
     //Beceause keel works kike a wing inder water
-    //Keel force has lift effect, thus part of lift has forward vector (because of small side drag)
+    //Keel force has also lift effect, thus part of lift has forward vector (because of small side drag)
     void addForceToKeel() {
         float sideSpeed = Vector3.Dot(getVelocity(), transform.right);
         float rightAngle = -90 * Mathf.Sign(sideSpeed);
-        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * getVelocity().normalized;
-        float antiDargCoeficient = 2; //TODO
+        Vector3 liftUnderwaterDirection = rotateVectorByDegree(getVelocity(), rightAngle);
+        float antiDargCoeficient = 2f; //TODO
         keelRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
     }
 
@@ -180,10 +220,8 @@ public class BoatForces : IYachtControls
     // It is similar to keel force but has no lift effect and influences whole yacht body
     void addHullDragForce() {
         float sideSpeed = Vector3.Dot(getVelocity(), transform.right);
-        float rightAngle = -90 * Mathf.Sign(sideSpeed);
-        Vector3 liftUnderwaterDirection = Quaternion.AngleAxis(rightAngle, Vector3.up) * getVelocity().normalized;
-        float antiDargCoeficient = 2; //TODO
-        yachtRigidbody.AddForce(liftUnderwaterDirection * sideSpeed * sideSpeed * waterRho * antiDargCoeficient);
+        float dargCoeficient = 0.25f; //TODO
+        yachtRigidbody.AddForce(-getVelocity().normalized * sideSpeed * sideSpeed * waterRho * dargCoeficient);
     }
 
     float calcualteFrictionalForce() {
